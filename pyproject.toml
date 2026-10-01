@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=64", "wheel", "setuptools_scm>=8", "cython==3.2.4", "numpy>=2.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+version_file = "oircal/_version.py"
+version_scheme = "post-release"
+fallback_version = "0.0.0"
+
+[project]
+name = "oircal"
+dynamic = ["version"]
+description = "Array-level detector and spectral calibration algorithms (ramp fitting, jump detection, detector corrections, combining) from the UCSD Optical-Infrared Laboratory."
+readme = "README.md"
+requires-python = ">=3.13"
+
+authors = [
+  {name = "Bryson Cale", email = "brcale@ucsd.edu"},
+]
+
+maintainers = [
+  {name = "Bryson Cale", email = "brcale@ucsd.edu"},
+]
+
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Topic :: Scientific/Engineering :: Astronomy",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+  # numba>=0.66 is required for NumPy 2.4+; older numba raises ImportError at import.
+  "numpy>=2.0",
+  "scipy",
+  "numba>=0.66.0",
+  "stcal==1.15.2",
+  "progressbar2",
+]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov"]
+docs = ["sphinx>=9.1.0", "nbsphinx", "sphinx-astropy", "pandoc", "sphinx-multiversion", "sphinxawesome-theme==6.0.0"]
+
+[project.urls]
+"Source" = "https://github.com/oirlab/oircal"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["oircal*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
