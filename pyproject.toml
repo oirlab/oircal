@@ -15,12 +15,17 @@ readme = "README.md"
 requires-python = ">=3.13"
 
 authors = [
-  {name = "Bryson Cale", email = "brcale@ucsd.edu"},
+  {name = "Bryson Cale", email = "brcale@ucsd.edu" },
+  {name = "Jean-Baptiste Ruffio", email = "jruffio@ucsd.edu" },
+  {name = "Charlie Kilpatrick", email = "ckilpatrick@northwestern.edu" }
 ]
 
 maintainers = [
-  {name = "Bryson Cale", email = "brcale@ucsd.edu"},
+  {name = "Bryson Cale", email = "brcale@ucsd.edu" },
+  {name = "Jean-Baptiste Ruffio", email = "jruffio@ucsd.edu" },
+  {name = "Charlie Kilpatrick", email = "ckilpatrick@northwestern.edu" }
 ]
+
 
 classifiers = [
   "Development Status :: 1 - Planning",
@@ -31,7 +36,7 @@ classifiers = [
 
 dependencies = [
   # numba>=0.66 is required for NumPy 2.4+; older numba raises ImportError at import.
-  "numpy>=2.0",
+  "numpy>=2.1",
   "scipy",
   "numba>=0.66.0",
   "stcal==1.15.2",
@@ -44,6 +49,7 @@ docs = ["sphinx>=9.1.0", "nbsphinx", "sphinx-astropy", "pandoc", "sphinx-multive
 
 [project.urls]
 "Source" = "https://github.com/oirlab/oircal"
+"Documentation" = "https://oirlab.github.io/oircal/"
 
 [tool.setuptools.packages.find]
 where = ["."]
