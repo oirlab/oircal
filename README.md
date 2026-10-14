@@ -13,6 +13,6 @@ Contributors
 (alphabetical order)
 
 - Bryson Cale
-- J.B. Ruffio
+- Jean-Baptiste Ruffio
 - Charlie Kilpatrick
 - Aidan Gibbs
