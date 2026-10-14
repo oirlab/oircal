@@ -81,6 +81,10 @@ exclude_patterns = []
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 # https://sphinxawesome.xyz/how-to/configure/
 html_theme = "sphinxawesome_theme"
+html_theme_options = {
+    "logo_light": "_static/oirlab_logo_light.png",
+    "logo_dark": "_static/oirlab_logo_dark.png",
+}
 
 
 pygments_style = "friendly"

@@ -59,3 +59,46 @@ pre {
         font-size: 12px;
     }
 }
+
+/* The theme sizes logos as small squares; keep the wide OIR Lab logo's aspect ratio */
+header img[alt="Logo"] {
+    width: auto;
+    height: 120px;
+}
+
+#left-sidebar img[alt="Logo"] {
+    width: auto;
+    height: 84px;
+}
+
+/* Larger site title next to the logo */
+header a > span.font-bold {
+    font-size: 1.75rem;
+}
+
+#left-sidebar a > span.font-bold {
+    font-size: 1.25rem;
+}
+
+/* Taller header (theme default 3.5rem) to fit the logo; offset the sticky sidebars and
+   anchor jumps to match */
+header > .container.h-14 {
+    height: 8.5rem;
+}
+
+@media (min-width: 768px) {
+    #left-sidebar.md\:top-14 {
+        top: 8.5rem;
+        height: calc(100vh - 8.5rem);
+    }
+}
+
+#right-sidebar .sticky.top-16 {
+    top: 9rem;
+    max-height: calc(100vh - 9.5rem);
+}
+
+#content section,
+.sig {
+    scroll-margin: 9.5rem;
+}
