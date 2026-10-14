@@ -516,7 +516,7 @@ def fit_ramps_jwst(
     jump_detection: bool = False,
     jump_rejection_threshold: float = 4.0,
     max_cores: int = 1,
-    algorithm: str = "JWST_LIKELY",
+    algorithm: str = "CYTHON_LIKELY",
 ) -> dict:
     """
     Fit ramps using JWST ramp fitting algorithms from stcal.ramp_fitting.
@@ -553,7 +553,7 @@ def fit_ramps_jwst(
         Number of cores for parallelization. Default is 1 (no parallelization).
     algorithm
         Ramp fitting algorithm to use. Options are 'JWST_LIKELY', 'JWST_FIXSEN' or 'CYTHON_LIKELY'.
-        Default is 'JWST_LIKELY'.
+        Default is 'CYTHON_LIKELY'.
 
     Returns
     -------

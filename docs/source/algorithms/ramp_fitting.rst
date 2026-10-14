@@ -58,9 +58,9 @@ Maximum Likelihood
 
 - ``"CYTHON_LIKELY"`` (default): the same algorithm as ``"JWST_LIKELY"`` implemented in Cython.
 
-- ``"JWST_LIKELY"`` (default): likelihood-based fitting (Brandt 2024) from `stcal <https://github.com/spacetelescope/stcal>`_. Needs at least 4 reads.
+- ``"JWST_LIKELY"``: likelihood-based fitting (Brandt 2024) from `stcal <https://github.com/spacetelescope/stcal>`_. Needs at least 4 reads.
 
-- ``"JWST_FIXSEN"``: A quasi-likelihood-based fitting method as described in `Fixsen et al 2000 <https://ui.adsabs.harvard.edu/abs/2000PASP..112.1350F/exportcitation>_.
+- ``"JWST_FIXSEN"``: A quasi-likelihood-based fitting method as described in `Fixsen et al 2000 <https://ui.adsabs.harvard.edu/abs/2000PASP..112.1350F/exportcitation>`_.
 
 .. code-block:: python
 
@@ -74,7 +74,7 @@ Maximum Likelihood
         input_dq=dq,
         rdnoise=read_noise,
         gain=gain,
-        algorithm="JWST_LIKELY",
+        algorithm="CYTHON_LIKELY",
     )
 
 With ``jump_detection=True``, :func:`.fit_ramps_jwst` also runs :func:`.jump_detection_jwst` on the ramps.
