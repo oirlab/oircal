@@ -1,17 +1,19 @@
 Data Products
 =============
 
-- Up-the-ramp data are 3D arrays of shape ``(Nreads, Nrows, Ncols)``, with a matching per-read data quality array ``dq_raw`` (typically ``uint8``).
+Methods in oircal work directly with NumPy arrays.
+
+- Up-the-ramp (UTR) data are 3D arrays of shape ``(Nreads, Nrows, Ncols)``, with a matching per-read data quality array ``dq_raw`` (typically ``uint8``).
 
 - Per-pixel images (rates, calibrations, data quality) are 2D arrays of shape ``(Nrows, Ncols)``. The per-pixel data quality array ``dq`` is typically ``uint32``.
 
-- Ramps are in DN and are converted to e- (or e-/s) with a gain correction after ramp fitting. Gain is in e-/DN, and
+- Ramps are in DN and are converted to e- (or e-/s) with a gain correction after ramp fitting. Gain is in e-/DN, so the correction is multiplicative.
 
 - Read noise is the single-read standard deviation in DN.
 
 Algorithms use or track the following arrays:
 
-- Up-the-ramp (UTR) data: ``data`` and ``dq_raw``.
+- UTR data: ``data`` and ``dq_raw``.
 - Rate maps: ``data``, ``var_poisson``, ``var_rnoise`` and ``dq``.
 
 Ramp fitting also returns ``mid_time``, the midpoint in time of each pixel's valid reads (MJD if the start time of the first read is given).
