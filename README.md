@@ -12,7 +12,7 @@ Contributors
 
 (alphabetical order)
 
-Bryson Cale
-J.B. Ruffio
-Charlie Kilpatrick
-Aidan Gibbs
+- Bryson Cale
+- J.B. Ruffio
+- Charlie Kilpatrick
+- Aidan Gibbs
