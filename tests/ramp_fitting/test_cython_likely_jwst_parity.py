@@ -11,21 +11,21 @@ from oircal.ramp_fitting.fit_ramp_jwst import fit_ramps_jwst
 from oircal.simulations.utr import create_ramp
 
 
-def _simulate_and_fit(*, truth, rn, n_reads, seed, algorithm, poisson_noise, dq_flags):
+def _simulate_and_fit(*, truth, rn, Nreads, seed, algorithm, poisson_noise, dq_flags):
     readtime = 1.7
-    ny, nx = truth.shape
-    times = np.arange(n_reads, dtype=np.float32) * np.float32(readtime)
-    gain = np.ones((ny, nx), np.float32)
-    rn_map = np.full((ny, nx), rn, np.float32)
-    dark = np.zeros((ny, nx), np.float32)
-    start = np.zeros((ny, nx), np.float64)
-    dq_raw = np.zeros((n_reads, ny, nx), np.uint8)
-    dq = np.zeros((ny, nx), np.uint32)
+    Nrows, Ncols = truth.shape
+    times = np.arange(Nreads, dtype=np.float32) * np.float32(readtime)
+    gain = np.ones((Nrows, Ncols), np.float32)
+    rn_map = np.full((Nrows, Ncols), rn, np.float32)
+    dark = np.zeros((Nrows, Ncols), np.float32)
+    start = np.zeros((Nrows, Ncols), np.float64)
+    dq_raw = np.zeros((Nreads, Nrows, Ncols), np.uint8)
+    dq = np.zeros((Nrows, Ncols), np.uint32)
 
     ramp = create_ramp(
         truth,
         readtime=readtime,
-        n_reads=n_reads,
+        Nreads=Nreads,
         gain=1.0,
         flat=1.0,
         bias=1000.0,
@@ -64,18 +64,30 @@ def _simulate_and_fit(*, truth, rn, n_reads, seed, algorithm, poisson_noise, dq_
 def test_cython_parity_empty_sky_matches_jwst_likely_var_rnoise(dq_flags):
     """RN-only empty sky: cython parity var_rnoise ~ jwst_likely (~OLS)."""
     rn = 1.0
-    n_reads = 10
-    ny = nx = 32
-    truth = np.zeros((ny, nx))
-    times = np.arange(n_reads, dtype=np.float64) * 1.7
+    Nreads = 10
+    Nrows = Ncols = 32
+    truth = np.zeros((Nrows, Ncols))
+    times = np.arange(Nreads, dtype=np.float64) * 1.7
     t0 = times - times.mean()
     var_ols = rn**2 / float(np.sum(t0**2))
 
     out_j, _ = _simulate_and_fit(
-        truth=truth, rn=rn, n_reads=n_reads, seed=0, algorithm="jwst_likely", poisson_noise=False, dq_flags=dq_flags
+        truth=truth,
+        rn=rn,
+        Nreads=Nreads,
+        seed=0,
+        algorithm="jwst_likely",
+        poisson_noise=False,
+        dq_flags=dq_flags,
     )
     out_c, _ = _simulate_and_fit(
-        truth=truth, rn=rn, n_reads=n_reads, seed=0, algorithm="cython_likely", poisson_noise=False, dq_flags=dq_flags
+        truth=truth,
+        rn=rn,
+        Nreads=Nreads,
+        seed=0,
+        algorithm="cython_likely",
+        poisson_noise=False,
+        dq_flags=dq_flags,
     )
 
     vr_j = float(np.median(out_j["rate_var_rnoise"]))
@@ -98,16 +110,28 @@ def test_cython_parity_empty_sky_matches_jwst_likely_var_rnoise(dq_flags):
 def test_cython_parity_rate_and_err_close_on_illuminated(dq_flags):
     """Illuminated field: rates and total rate_err within a few percent of jwst."""
     rn = 8.5
-    n_reads = 10
-    ny = nx = 48
+    Nreads = 10
+    Nrows = Ncols = 48
     rng = np.random.default_rng(1)
-    truth = rng.uniform(0.0, 50.0, size=(ny, nx))
+    truth = rng.uniform(0.0, 50.0, size=(Nrows, Ncols))
 
     out_j, dt_j = _simulate_and_fit(
-        truth=truth, rn=rn, n_reads=n_reads, seed=2, algorithm="jwst_likely", poisson_noise=True, dq_flags=dq_flags
+        truth=truth,
+        rn=rn,
+        Nreads=Nreads,
+        seed=2,
+        algorithm="jwst_likely",
+        poisson_noise=True,
+        dq_flags=dq_flags,
     )
     out_c, dt_c = _simulate_and_fit(
-        truth=truth, rn=rn, n_reads=n_reads, seed=2, algorithm="cython_likely", poisson_noise=True, dq_flags=dq_flags
+        truth=truth,
+        rn=rn,
+        Nreads=Nreads,
+        seed=2,
+        algorithm="cython_likely",
+        poisson_noise=True,
+        dq_flags=dq_flags,
     )
 
     rate_j = np.asarray(out_j["rate"], float)
@@ -122,10 +146,12 @@ def test_cython_parity_rate_and_err_close_on_illuminated(dq_flags):
     assert np.count_nonzero(good) > 0.9 * rate_j.size
 
     med_abs_rate = float(np.median(np.abs(rate_j[good])))
-    med_rel_rate = float(np.median(np.abs(rate_c[good] - rate_j[good]) / np.maximum(err_j[good], 1e-12)))
+    med_rel_rate = float(
+        np.median(np.abs(rate_c[good] - rate_j[good]) / np.maximum(err_j[good], 1e-12)),
+    )
     med_err_ratio = float(np.median(err_c[good] / err_j[good]))
     split_ratio = float(
-        np.median(np.sqrt(np.maximum(vp_c[good] + vr_c[good], 0.0)) / err_c[good])
+        np.median(np.sqrt(np.maximum(vp_c[good] + vr_c[good], 0.0)) / err_c[good]),
     )
 
     # Rates should agree at the ~noise level (same ramp, same theory).

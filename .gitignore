@@ -85,7 +85,8 @@ docs/source/_static/notebook_embeds*.js
 
 # --- IDEs / editors ----------------------------------------------------------
 .idea/
-.vscode/
+.vscode/*
+!.vscode/settings.json
 .cursor/
 .spyderproject
 .spyproject

@@ -1,59 +1,58 @@
 # Author: Tim Brandt
 # Shared with HISPEC team in Aug 2025
 # Modified by JB Ruffio on 2026-01-01 to fix compatibility with newer numpy versions.
+# Ported into oircal by Bryson Cale September 2026
 #
 # Reference:
 # Brandt, T. D., "A Classic Nonlinearity Correction Algorithm for Detectors Read Out Up-the-ramp", PASP, 137, 125005 (2025)
 # https://ui.adsabs.harvard.edu/abs/2025PASP..137l5005B/abstract
 
 import numpy as np
+from numpy.polynomial import Polynomial, legendre
 from scipy import special
-from numpy.polynomial import legendre, Polynomial
 
 
 class Covar:
-
     """
 
     class Covar holding read and photon noise components of alpha and
     beta and the time intervals between the resultant midpoints
 
     """
-    
-    def __init__(self, read_times : np.ndarray | list, singlereads : bool = False):
 
+    def __init__(self, read_times: np.ndarray | list, singlereads: bool = False):
         """
 
         Compute alpha and beta, the diagonal and off-diagonal elements of
-        the covariance matrix of the resultant differences, and the time 
+        the covariance matrix of the resultant differences, and the time
         intervals between the resultant midpoints.
 
         Parameters
         ----------
-        read_times : np.ndarray or list
-            1D array of shape (nreads,) of read times, or a list of values or lists for
+        read_times
+            1D array of shape (Nreads,) of read times, or a list of values or lists for
             the times of reads. If a list of lists, times for reads that are averaged
             together to produce a resultant. Must be an np.ndarray if `singlereads` is True.
-        singlereads : bool, optional
+        singlereads
             If True, every resultant is a single read. Default is False.
         """
 
         if not singlereads:
-            mean_t = []   # mean time of the resultant as defined in the paper
-            tau = []   # variance-weighted mean time of the resultant
+            mean_t = []  # mean time of the resultant as defined in the paper
+            tau = []  # variance-weighted mean time of the resultant
             N = []  # Number of reads per resultant
-            
+
             for times in read_times:
                 mean_t += [np.mean(times)]
-                
+
                 if hasattr(times, "__len__"):
                     N += [len(times)]
                     k = np.arange(1, N[-1] + 1)
-                    tau += [1/N[-1]**2*np.sum((2*N[-1] + 1 - 2*k)*np.array(times))]
+                    tau += [1 / N[-1] ** 2 * np.sum((2 * N[-1] + 1 - 2 * k) * np.array(times))]
                 else:
                     tau += [times]
                     N += [1]
-            
+
             mean_t = np.array(mean_t)
             tau = np.array(tau)
             N = np.array(N)
@@ -61,22 +60,22 @@ class Covar:
             mean_t = read_times
             tau = read_times
             N = np.ones(read_times.shape)
-        
+
         delta_t = mean_t[1:] - mean_t[:-1]
 
         self.delta_t = delta_t
         self.mean_t = mean_t
         self.tau = tau
         self.Nreads = N
-        
-        self.alpha_readnoise = (1/N[:-1] + 1/N[1:])/delta_t**2
-        self.beta_readnoise = -1/N[1:-1]/(delta_t[1:]*delta_t[:-1])
-        
-        self.alpha_phnoise = (tau[:-1] + tau[1:] - 2*mean_t[:-1])/delta_t**2
-        self.beta_phnoise = (mean_t[1:-1] - tau[1:-1])/(delta_t[1:]*delta_t[:-1])
-                
-class Nonlin_Result:
 
+        self.alpha_readnoise = (1 / N[:-1] + 1 / N[1:]) / delta_t**2
+        self.beta_readnoise = -1 / N[1:-1] / (delta_t[1:] * delta_t[:-1])
+
+        self.alpha_phnoise = (tau[:-1] + tau[1:] - 2 * mean_t[:-1]) / delta_t**2
+        self.beta_phnoise = (mean_t[1:-1] - tau[1:-1]) / (delta_t[1:] * delta_t[:-1])
+
+
+class Nonlin_Result:
     def __init__(self):
         self.order = None
         self.slopes = None
@@ -87,45 +86,45 @@ class Nonlin_Result:
         self.satval = None
         self.cov = None
         self.norm = None
-        
-        
-def calc_A_matrix(
-    diffs : np.ndarray,
-    diffs_pow : np.ndarray,
-    Cov : Covar,
-    sig : np.ndarray,
-    gain : np.ndarray,
-    countrateguess : np.ndarray | None = None,
-    diffs2use : np.ndarray | None = None,
-    rescale : bool = True,
-    dn_scale : int = 10
-):
 
+
+def calc_A_matrix(
+    diffs: np.ndarray,
+    diffs_pow: np.ndarray,
+    Cov: Covar,
+    sig: np.ndarray,
+    gain: np.ndarray,
+    countrateguess: np.ndarray | None = None,
+    diffs2use: np.ndarray | None = None,
+    rescale: bool = True,
+    dn_scale: int = 10,
+):
     """
     Calculate the matrix elements needed to compute a nonlinearity correction.
 
     Parameters
     ----------
-    diffs : np.ndarray
+    diffs
         2D array of shape (ndiffs, npix) containing the resultant differences.
-    diffs_pow : np.ndarray
+    diffs_pow
         3D array of shape (order+1, ndiffs, npix) containing the templates for nonlinearity fit.
-    Cov : Covar
+    Cov
         Class holding the covariance matrix information.
-    sig : np.ndarray
+    sig
         1D array of shape (npix,) containing the read noise.
-    gain : np.ndarray
+    gain
         1D array of shape (npix,) containing the gain.
-    countrateguess : np.ndarray, optional
+    countrateguess
         1D array of shape (npix,) containing count rates to be used to estimate the covariance matrix.
-        If None (default), the average difference is used, replacing negative means with zeros.
-    diffs2use : np.ndarray, optional
+        If None, the average difference is used, replacing negative means with zeros.
+        Default is None.
+    diffs2use
         2D boolean array of shape (ndiffs, npix); whether to use each resultant difference for each pixel.
         Default is None.
-    rescale : bool, optional
-        Scale the covariance matrix internally to avoid possible overflow/underflow 
+    rescale
+        Scale the covariance matrix internally to avoid possible overflow/underflow
         problems for long ramps. Slightly increases computational cost. Default is True.
-    dn_scale : int, optional
+    dn_scale
         How often to keep tallies of the scale factor. Default is 10.
 
 
@@ -138,48 +137,46 @@ def calc_A_matrix(
 
     if diffs2use is None:
         diffs2use = np.ones(diffs.shape, np.uint8)
-    
+
     if countrateguess is None:
         # initial guess for count rate is the average of the unmasked
         # resultant differences unless otherwise specified.
-        countrateguess = np.sum((diffs*diffs2use), axis=0)/np.sum(diffs2use, axis=0)
+        countrateguess = np.sum((diffs * diffs2use), axis=0) / np.sum(diffs2use, axis=0)
         countrateguess *= countrateguess > 0
 
     # Elements of the covariance matrix
 
     if len(Cov.alpha_phnoise.shape) == 1:
-
-        alpha_phnoise = (countrateguess/gain)*Cov.alpha_phnoise[:, np.newaxis]
-        alpha_readnoise = sig**2*Cov.alpha_readnoise[:, np.newaxis]
+        alpha_phnoise = (countrateguess / gain) * Cov.alpha_phnoise[:, np.newaxis]
+        alpha_readnoise = sig**2 * Cov.alpha_readnoise[:, np.newaxis]
         alpha = alpha_phnoise + alpha_readnoise
 
-        beta_phnoise = (countrateguess/gain)*Cov.beta_phnoise[:, np.newaxis]
-        beta_readnoise = sig**2*Cov.beta_readnoise[:, np.newaxis]
+        beta_phnoise = (countrateguess / gain) * Cov.beta_phnoise[:, np.newaxis]
+        beta_readnoise = sig**2 * Cov.beta_readnoise[:, np.newaxis]
         beta = beta_phnoise + beta_readnoise
 
     else:
-
-        alpha_phnoise = countrateguess*Cov.alpha_phnoise
-        alpha_readnoise = sig**2*Cov.alpha_readnoise
+        alpha_phnoise = countrateguess * Cov.alpha_phnoise
+        alpha_readnoise = sig**2 * Cov.alpha_readnoise
         alpha = alpha_phnoise + alpha_readnoise
 
-        beta_phnoise = countrateguess*Cov.beta_phnoise
-        beta_readnoise = sig**2*Cov.beta_readnoise
+        beta_phnoise = countrateguess * Cov.beta_phnoise
+        beta_readnoise = sig**2 * Cov.beta_readnoise
         beta = beta_phnoise + beta_readnoise
-        
+
     # Mask resultant differences that should be ignored.  This is half
     # of what we need to do to mask these resultant differences; the
     # rest comes later.
 
-    d = diffs*diffs2use
+    d = diffs * diffs2use
 
-    d_pow = diffs_pow*diffs2use[np.newaxis, :]
+    d_pow = diffs_pow * diffs2use[np.newaxis, :]
     order = diffs_pow.shape[0] - 1
-        
-    beta = beta*diffs2use[1:]*diffs2use[:-1]
+
+    beta = beta * diffs2use[1:] * diffs2use[:-1]
 
     ndiffs, npix = alpha.shape
-        
+
     # Rescale the covariance matrix to a determinant of 1 to
     # avoid possible overflow/underflow.  The uncertainty and chi
     # squared value will need to be scaled back later.  Note that
@@ -190,165 +187,172 @@ def calc_A_matrix(
     # a running track of these factors to construct the scale at
     # the end, and keep scaling throughout so that we never risk
     # overflow or underflow.
-    
+
     if rescale:
         theta = np.ones((ndiffs + 1, npix))
         theta[1] = alpha[0]
-        
-        scale = theta[0]*1
-        for i in range(2, ndiffs + 1):
-        
-            theta[i] = alpha[i - 1]/scale*theta[i - 1] - beta[i - 2]**2/scale**2*theta[i - 2]
 
-            # Scaling every ten steps is safe for alpha up to 1e20 
-            # or so and incurs a negligible computational cost for 
+        scale = theta[0] * 1
+        for i in range(2, ndiffs + 1):
+            theta[i] = (
+                alpha[i - 1] / scale * theta[i - 1] - beta[i - 2] ** 2 / scale**2 * theta[i - 2]
+            )
+
+            # Scaling every ten steps is safe for alpha up to 1e20
+            # or so and incurs a negligible computational cost for
             # the fractional power.
-            
+
             if i % int(dn_scale) == 0 or i == ndiffs:
-                f = theta[i]**(1/i)
+                f = theta[i] ** (1 / i)
                 scale *= f
-                theta[i - 1] /= theta[i]/f
-                theta[i - 2] /= theta[i]/f**2
-                theta[i] = 1 
+                theta[i - 1] /= theta[i] / f
+                theta[i - 2] /= theta[i] / f**2
+                theta[i] = 1
     else:
         scale = 1
-            
+
     alpha /= scale
     beta /= scale
-    
+
     # All definitions and formulas here are in the paper.
 
     theta = np.ones((ndiffs + 1, npix))
     theta[1] = alpha[0]
     for i in range(2, ndiffs + 1):
-        theta[i] = alpha[i - 1]*theta[i - 1] - beta[i - 2]**2*theta[i - 2]
-        
+        theta[i] = alpha[i - 1] * theta[i - 1] - beta[i - 2] ** 2 * theta[i - 2]
+
     phi = np.ones((ndiffs + 1, npix))
     phi[ndiffs - 1] = alpha[ndiffs - 1]
     for i in range(ndiffs - 2, -1, -1):
-        phi[i] = alpha[i]*phi[i + 1] - beta[i]**2*phi[i + 2]
+        phi[i] = alpha[i] * phi[i + 1] - beta[i] ** 2 * phi[i + 2]
 
     sgn = np.ones((ndiffs, npix))
     sgn[::2] = -1
 
     ThetaD_all = np.zeros((order + 1, ndiffs + 1, npix))
-    ThetaD_all[:, 1] = -d_pow[:, 0]*theta[0]
+    ThetaD_all[:, 1] = -d_pow[:, 0] * theta[0]
     for i in range(1, ndiffs):
-        ThetaD_all[:, i + 1] = beta[i - 1]*ThetaD_all[:, i] + sgn[i]*d_pow[:, i]*theta[i]
+        ThetaD_all[:, i + 1] = beta[i - 1] * ThetaD_all[:, i] + sgn[i] * d_pow[:, i] * theta[i]
 
     PhiD_all = np.zeros((order + 1, ndiffs, npix))
     for i in range(ndiffs - 2, -1, -1):
-        PhiD_all[:, i] = (PhiD_all[:, i + 1] + sgn[i + 1]*d_pow[:, i + 1]*phi[i + 2])*beta[i]
-        
+        PhiD_all[:, i] = (PhiD_all[:, i + 1] + sgn[i + 1] * d_pow[:, i + 1] * phi[i + 2]) * beta[i]
 
     A_all = np.zeros((order + 1, order + 1, d.shape[1]))
     for i in range(order + 1):
+        dB = sgn / theta[ndiffs] * (phi[1:] * ThetaD_all[i, 1:] + theta[:-1] * PhiD_all[i])
 
-        dB = sgn/theta[ndiffs]*(phi[1:]*ThetaD_all[i, 1:] +
-                                theta[:-1]*PhiD_all[i])
-        
         for j in range(i, order + 1):
+            A_all[i, j] = np.sum(dB * d_pow[j], axis=0)
 
-            A_all[i, j] = np.sum(dB*d_pow[j], axis=0)
-            
             # Matrix is symmetric
             A_all[j, i] = A_all[i, j]
-            
-    return A_all/scale
+
+    return A_all / scale
 
 
-def get_nonlin_coefs(data_list : np.ndarray | list[np.ndarray], sig : np.ndarray, gain : np.ndarray,
-                     order : int, intercepts : np.ndarray, nsamples_est : int = 5,
-                     d2u_list : np.ndarray | list[np.ndarray] | None = None,
-                     satval : float | np.ndarray = 6e4, use_legendre : bool = True,
-                     calc_cond : bool = False, last_pars : Nonlin_Result | None = None,
-                     rescale_domain : bool = True):
-    
+def get_nonlin_coefs(
+    data_list: np.ndarray | list[np.ndarray],
+    sig: np.ndarray,
+    gain: np.ndarray,
+    order: int,
+    intercepts: np.ndarray,
+    nsamples_est: int = 5,
+    d2u_list: np.ndarray | list[np.ndarray] | None = None,
+    satval: float | np.ndarray = 6e4,
+    use_legendre: bool = True,
+    calc_cond: bool = False,
+    last_pars: Nonlin_Result | None = None,
+    rescale_domain: bool = True,
+):
     """
     Use many ramps to fit for nonlinearity correction coefficients
-    
+
     Parameters
     ----------
-    data_list : np.ndarray or list of np.ndarray
-        Ramps: a 3D array of shape (nramps, nreads, npixels), or a list of 2D arrays
-        each of shape (nreads, npixels).
-    sig : np.ndarray
+    data_list
+        Ramps: a 3D array of shape (nramps, Nreads, npixels), or a list of 2D arrays
+        each of shape (Nreads, npixels).
+    sig
         1D array of shape (npixels,) containing the read noise.
-    gain : np.ndarray
+    gain
         1D array of shape (npixels,) containing the gain.
-    order : int
+    order
         order of polynomial to fit for the nonlinearity correction
-    intercepts : np.ndarray
+    intercepts
         1D array of shape (npixels,) containing the bias levels to anchor nonlinearity fit.
-    nsamples_est : int, optional
+    nsamples_est
         number of initial samples whose median provides an estimate of
         the count rate for the total slope target and for getting a
         baseline to reject egregious jumps. Default is 5.
-    d2u_list : np.ndarray or list of np.ndarray, optional
+    d2u_list
         uint8 array(s), same shapes as data_list with one fewer read, =1 for
-        the read differences that we should use.  If None (default), use all
+        the read differences that we should use.  If None, use all
         reads. Arrays will be further flagged in this routine for
-        saturation and for egregious jumps
-    satval : float or np.ndarray, optional
+        saturation and for egregious jumps. Default is None.
+    satval
         saturation value. If an np.ndarray, should be 1D of shape (npixels,). Default is 6e4.
-    use_legendre : bool, optional
+    use_legendre
         fit in the Legendre polynomial basis? Default is True.
-    calc_cond : bool, optional
+    calc_cond
         compute the condition number of the matrix for each pixel? Default is False.
-    last_pars : Nonlin_Result, optional
+    last_pars
         output of a previous run of get_nonlin_coefs to set the
         covariance matrix from the previously estimated count rates. Default is None.
-    rescale_domain : bool, optional
+    rescale_domain
         rescale the domain to [-1, 1] for better numerical behavior? Default is True.
-    
+
     Returns
     -------
     Nonlin_Result
         result structure with lots of information
-    
+
     """
     nramps = len(data_list)
     N = nramps - 1
     npixels = data_list[0].shape[-1]
     A = np.zeros((order + N, order + N, npixels))
-    Btot = np.zeros((npixels))
+    Btot = np.zeros(npixels)
 
     # Re-map the domain to [-1, 1]
     if rescale_domain:
-        offset = (satval - intercepts)/2
+        offset = (satval - intercepts) / 2
         norm = offset
     else:
-        offset = 0*intercepts
-        norm = np.amax(np.array([data_list[i][-1] for i in range(len(data_list))]), axis=0) - intercepts
+        offset = 0 * intercepts
+        norm = (
+            np.amax(np.array([data_list[i][-1] for i in range(len(data_list))]), axis=0)
+            - intercepts
+        )
     xi = None
-    
+
     for i in range(nramps):
-        nreads = len(data_list[i])
-        C = Covar(np.arange(1, nreads + 1), singlereads=True)
-        
-        resid = data_list[i]*1. - intercepts - offset
-        diff = (resid[1:] - resid[:-1])/C.delta_t[:, np.newaxis]
-        
+        Nreads = len(data_list[i])
+        C = Covar(np.arange(1, Nreads + 1), singlereads=True)
+
+        resid = data_list[i] * 1.0 - intercepts - offset
+        diff = (resid[1:] - resid[:-1]) / C.delta_t[:, np.newaxis]
+
         # Try to flag and remove really obvious jumps.
 
         med_diff = np.median(diff[:nsamples_est], axis=0)
-        diff_ok = diff < 2*np.abs(med_diff[np.newaxis, :]) + 5*sig
+        diff_ok = diff < 2 * np.abs(med_diff[np.newaxis, :]) + 5 * sig
         d2u = (data_list[i][1:] < satval) & (diff_ok)
-        
+
         d_pow = np.ones((order + 1, diff.shape[0], diff.shape[1]))
 
         # Standard polynomial basis set
         if not use_legendre:
-            resid_pow = resid/norm
+            resid_pow = resid / norm
             for j in range(1, order + 1):
-                d_pow[j] = (resid_pow[1:] - resid_pow[:-1])/C.delta_t[:, np.newaxis]
-                resid_pow *= resid/norm
+                d_pow[j] = (resid_pow[1:] - resid_pow[:-1]) / C.delta_t[:, np.newaxis]
+                resid_pow *= resid / norm
 
         # Legendre polynomial basis set
         else:
             for j in range(1, order + 1):
-                legcoef = [0]*j + [1]
-                resid_pow_leg = legendre.legval(resid/norm, legcoef)
+                legcoef = [0] * j + [1]
+                resid_pow_leg = legendre.legval(resid / norm, legcoef)
                 d_pow[j] = resid_pow_leg[1:] - resid_pow_leg[:-1]
 
         # Compute the necessary matrix elements.
@@ -358,10 +362,9 @@ def get_nonlin_coefs(data_list : np.ndarray | list[np.ndarray], sig : np.ndarray
         else:
             cguess = None
 
-        A_all = calc_A_matrix(diff, d_pow, C, sig, gain, diffs2use=d2u,
-                              countrateguess=cguess)
+        A_all = calc_A_matrix(diff, d_pow, C, sig, gain, diffs2use=d2u, countrateguess=cguess)
 
-        Btot += np.median(diff[0:nsamples_est], axis=0)/norm
+        Btot += np.median(diff[0:nsamples_est], axis=0) / norm
 
         # Embed this within the larger matrix.
         if i < N:
@@ -369,18 +372,18 @@ def get_nonlin_coefs(data_list : np.ndarray | list[np.ndarray], sig : np.ndarray
             A[N:, i] -= A_all[1:, 0]
             A[i, N:] -= A_all[0, 1:]
             A[i, i] += A_all[0, 0]
-            
+
         # If this is the final ramp, need to substitute for b and
         # take care of all of the cross terms that are now nonzero
-        else:            
-            A[N:, N:] += A_all[1:, 1:]            
+        else:
+            A[N:, N:] += A_all[1:, 1:]
             A[N:, :N] += A_all[1:, 0][:, np.newaxis]
             A[:N, N:] += A_all[0, 1:][np.newaxis, :]
             A[:N, :N] += A_all[0, 0]
 
             xi = np.zeros((A.shape[0], A.shape[-1]))
-            xi[:N] += Btot*A_all[0, 0]
-            xi[N:] += Btot*A_all[1:, 0]
+            xi[:N] += Btot * A_all[0, 0]
+            xi[N:] += Btot * A_all[1:, 0]
 
     result = Nonlin_Result()
     result.order = order
@@ -401,45 +404,43 @@ def get_nonlin_coefs(data_list : np.ndarray | list[np.ndarray], sig : np.ndarray
     lstsq_coefs = x[..., 0]  # (npixels, 302)
 
     # Compute chi squared summed over the ramps.
-    chisq = np.einsum('ij,jki,ik->i', lstsq_coefs, A, lstsq_coefs)
-    chisq -= 2*np.einsum('ji,ij->i', xi, lstsq_coefs)
-    chisq += Btot*xi[0]
+    chisq = np.einsum("ij,jki,ik->i", lstsq_coefs, A, lstsq_coefs)
+    chisq -= 2 * np.einsum("ji,ij->i", xi, lstsq_coefs)
+    chisq += Btot * xi[0]
     chisq *= norm**2
-    
+
     result.chisq = chisq
 
     # Save the best-fit "true" slope of each ramp
     result.slopes = np.zeros((npixels, nramps))
-    result.slopes[:, :-1] = lstsq_coefs[:, :N]*norm[:, np.newaxis]
-    # Insert the m-th ramp's slope back in.    
-    result.slopes[:, -1] = (Btot - np.sum(lstsq_coefs[:, :N], axis=1))*norm
+    result.slopes[:, :-1] = lstsq_coefs[:, :N] * norm[:, np.newaxis]
+    # Insert the m-th ramp's slope back in.
+    result.slopes[:, -1] = (Btot - np.sum(lstsq_coefs[:, :N], axis=1)) * norm
 
     # Convert the polynomial coefficients to a standard form polynomial
     # with an origin at intercepts.
-    
-    result.nonlin_coefs = lstsq_coefs[:, N:]*1.
+
+    result.nonlin_coefs = lstsq_coefs[:, N:] * 1.0
     # Constant term doesn't matter; insert a zero.
     polycoefs = np.zeros(order + 1)
 
     # Precompute factorials (gamma function).
     gamma_mp1 = [special.gamma(m + 1) for m in range(len(polycoefs))]
-    
+
     for i in range(npixels):
         polycoefs[1:] = result.nonlin_coefs[i]
-        if use_legendre:
-            poly = Polynomial(legendre.leg2poly(polycoefs))
-        else:
-            poly = Polynomial(polycoefs)
+        poly = Polynomial(legendre.leg2poly(polycoefs)) if use_legendre else Polynomial(polycoefs)
 
         # Shift polynomial's origin back by offset
-        newcoefs = [poly.deriv(m)(-(offset/norm)[i])/gamma_mp1[m]
-                    for m in range(len(polycoefs))]
+        newcoefs = [
+            poly.deriv(m)(-(offset / norm)[i]) / gamma_mp1[m] for m in range(len(polycoefs))
+        ]
         result.nonlin_coefs[i] = np.array(newcoefs)[1:]
 
     # Convert units of coefficients back to DN to the appropriate power
-    result.nonlin_coefs /= norm[:, np.newaxis]**np.arange(order)[np.newaxis, :]
-    result.norm = norm[:, np.newaxis]**np.arange(order)[np.newaxis, :]
+    result.nonlin_coefs /= norm[:, np.newaxis] ** np.arange(order)[np.newaxis, :]
+    result.norm = norm[:, np.newaxis] ** np.arange(order)[np.newaxis, :]
     result.cov = np.swapaxes(A, 0, 2)
     result.xi = xi
-    
+
     return result

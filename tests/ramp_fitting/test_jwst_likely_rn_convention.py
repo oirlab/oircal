@@ -16,20 +16,20 @@ def test_jwst_likely_var_rnoise_matches_single_read_ols_theory(dq_flags):
     HISPEC single-read RN → CDS before the call, reported var_rnoise is 2× low.
     """
     readtime = 1.7
-    n_reads = 10
+    Nreads = 10
     rn = 1.0
-    ny = nx = 48
-    truth = np.zeros((ny, nx))
-    times = np.arange(n_reads, dtype=np.float32) * np.float32(readtime)
+    Nrows = Ncols = 48
+    truth = np.zeros((Nrows, Ncols))
+    times = np.arange(Nreads, dtype=np.float32) * np.float32(readtime)
     t0 = times.astype(np.float64) - times.astype(np.float64).mean()
     var_ols = rn**2 / float(np.sum(t0**2))
 
-    gain = np.ones((ny, nx), np.float32)
-    rn_map = np.full((ny, nx), rn, np.float32)
-    dark = np.zeros((ny, nx), np.float32)
-    start = np.zeros((ny, nx), np.float64)
-    dq_raw = np.zeros((n_reads, ny, nx), np.uint8)
-    dq = np.zeros((ny, nx), np.uint32)
+    gain = np.ones((Nrows, Ncols), np.float32)
+    rn_map = np.full((Nrows, Ncols), rn, np.float32)
+    dark = np.zeros((Nrows, Ncols), np.float32)
+    start = np.zeros((Nrows, Ncols), np.float64)
+    dq_raw = np.zeros((Nreads, Nrows, Ncols), np.uint8)
+    dq = np.zeros((Nrows, Ncols), np.uint32)
 
     rates = []
     vrs = []
@@ -37,7 +37,7 @@ def test_jwst_likely_var_rnoise_matches_single_read_ols_theory(dq_flags):
         ramp = create_ramp(
             truth,
             readtime=readtime,
-            n_reads=n_reads,
+            Nreads=Nreads,
             gain=1.0,
             flat=1.0,
             bias=1000.0,

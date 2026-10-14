@@ -6,16 +6,18 @@ from the process CPU affinity mask, which on CI runners can be lower than
 ``os.cpu_count()``. Requested thread counts are clamped to that maximum so
 ``set_num_threads`` never raises ``ValueError``.
 """
+
 from __future__ import annotations
 
+from contextlib import contextmanager
 import ctypes
 import os
-import numpy as np
-from contextlib import contextmanager
+import typing
 
 from numba import config, get_num_threads, set_num_threads
+import numpy as np
 
-import typing
+
 if typing.TYPE_CHECKING:
     from multiprocessing.sharedctypes import Array
 
@@ -27,29 +29,29 @@ __all__ = [
 
 
 def shared_array_to_numpy(
-    shared_array : Array,
-    shape : tuple | None = None,
-    dtype : type | None = None
+    shared_array: Array,
+    shape: tuple | None = None,
+    dtype: type | None = None,
 ):
     """
-    Covert a shared array to a numpy array
+    Convert a shared array to a NumPy array that views the same memory.
 
     Originally from pyklip Wang, J. J., Ruffio, J.-B., De Rosa, R. J., et al. 2015, ASCL, ascl:1506.001
     https://bitbucket.org/pyKLIP/pyklip/src/main/pyklip/parallelized.py
 
     Parameters
     ----------
-    shared_array : multiprocessing.sharedctypes.Array
+    shared_array
         The shared array to convert.
-    shape : tuple of int, optional
+    shape
         Shape of the returned array. Default is None (1D).
-    dtype : type, optional
+    dtype
         The ctypes element type of the shared array. Default is ctypes.c_float.
 
     Returns
     -------
-    numpy_array : np.ndarray
-        The converted numpy array for vectorized operation. still points to the same memory.
+    numpy_array : np.ndarray or None
+        NumPy view of the shared memory, or None if `shared_array` is None.
     """
     if dtype is None:
         dtype = ctypes.c_float
@@ -77,7 +79,7 @@ def resolve_numba_threads(max_cores: int | None = None) -> int:
 
     Parameters
     ----------
-    max_cores : int or None, optional
+    max_cores
         Requested number of threads. Default is ``None``.
 
     Returns
@@ -108,9 +110,8 @@ def numba_thread_scope(num_threads: int | None = None):
 
     Parameters
     ----------
-    num_threads : int or None, optional
-        Explicit thread count, or ``None`` for all available CPUs (capped).
-        Default is ``None``.
+    num_threads
+        Explicit thread count, or ``None`` for all available CPUs (capped). Default is ``None``.
 
     Examples
     --------

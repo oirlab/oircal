@@ -2,28 +2,25 @@
 
 Ported from the bias section of hispecdrp's ``test_stage0_units``.
 """
-from oircal.bias_subtraction import subtract_bias
+
 import numpy as np
+
+from oircal.bias_subtraction import subtract_bias
 
 
 def _make_inputs():
-    # Fake ramp data: shape (n_read=3, ny=2, nx=2)
+    # Fake ramp data: shape (Nreads=3, Nrows=2, Ncols=2)
     data_raw = np.array(
         [
-            [[10, 20],
-             [30, 40]],
-            [[15, 25],
-             [35, 45]],
-            [[20, 30],
-             [40, 50]]
+            [[10, 20], [30, 40]],
+            [[15, 25], [35, 45]],
+            [[20, 30], [40, 50]],
         ],
-        dtype=np.float32
+        dtype=np.float32,
     )
     dq = np.zeros((2, 2), dtype=np.uint32)
-    bias_map = np.array([[1, 2],
-                         [3, 4]], dtype=np.float32)
-    bias_dq = np.array([[0, 1],
-                        [2, 4]], dtype=np.uint32)
+    bias_map = np.array([[1, 2], [3, 4]], dtype=np.float32)
+    bias_dq = np.array([[0, 1], [2, 4]], dtype=np.uint32)
     return data_raw, dq, bias_map, bias_dq
 
 

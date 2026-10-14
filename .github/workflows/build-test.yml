@@ -1,0 +1,38 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [ main ]
+
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.13"]
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+        persist-credentials: false
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Update setuptools and wheel
+      run: |
+          python -m pip install --upgrade pip setuptools wheel "cython==3.2.4" numpy
+    - name: Building the cython extension
+      run: |
+          python setup.py build_ext --inplace
+    - name: Install the package and test dependencies
+      run: |
+          pip install ".[test]"
+    - name: Run tests
+      # --durations=0 prints every test's wall time at the end of the job log.
+      run: |
+          pytest --durations=0

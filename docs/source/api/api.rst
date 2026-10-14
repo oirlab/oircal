@@ -8,6 +8,7 @@ API Reference
    :recursive:
 
    bias_subtraction
+   coadd
    dark_subtraction
    detector_flat
    jump_detection

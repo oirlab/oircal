@@ -1,5 +1,5 @@
-import numpy as np
 from numba import njit
+import numpy as np
 
 
 @njit(inline="always", nogil=True)
@@ -15,7 +15,7 @@ def mean_numba_if_not_zero(arr: np.ndarray) -> float:
     for i in range(arr.size):
         if arr[i] != 0:
             total += arr[i]
-            n=n+1
+            n = n + 1
     if n != 0:
         return total / n
     else:

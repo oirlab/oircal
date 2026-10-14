@@ -11,14 +11,14 @@ from oircal.simulations import create_ramp
 def test_jwst_likely_background_allows_negative_rates(dq_flags):
     """Empty pixels with read noise must yield a signed rate distribution about 0."""
     np.random.seed(42)
-    ny, nx = 32, 128
-    rate = np.zeros((ny, nx), dtype=np.float32)
+    Nrows, Ncols = 32, 128
+    rate = np.zeros((Nrows, Ncols), dtype=np.float32)
     rate[:, 60:68] = 8.0  # bright strip
 
     ramp = create_ramp(
         rate,
         readtime=1.7,
-        n_reads=8,
+        Nreads=8,
         gain=1.0,
         flat=1.0,
         dark=0.0,
@@ -30,17 +30,17 @@ def test_jwst_likely_background_allows_negative_rates(dq_flags):
     )
     data = np.asarray(ramp["data"], dtype=np.float32)
     dq_raw = np.asarray(ramp["dq_raw"])
-    n_reads = data.shape[0]
-    times = np.arange(n_reads, dtype=np.float64) * 1.7
-    rdnoise = np.full((ny, nx), 10.0, dtype=np.float32)
-    gain = np.ones((ny, nx), dtype=np.float32)
-    start_times = np.zeros((ny, nx), dtype=np.float64)
+    Nreads = data.shape[0]
+    times = np.arange(Nreads, dtype=np.float64) * 1.7
+    rdnoise = np.full((Nrows, Ncols), 10.0, dtype=np.float32)
+    gain = np.ones((Nrows, Ncols), dtype=np.float32)
+    start_times = np.zeros((Nrows, Ncols), dtype=np.float64)
 
     out = fit_ramps_jwst(
         times,
         data,
         dq_flags,
-        dq_raw=dq_raw,
+        input_dq_raw=dq_raw,
         rdnoise=rdnoise,
         gain=gain,
         start_times=start_times,

@@ -45,6 +45,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov"]
+dev = ["ruff==0.16.10"]
 docs = ["sphinx>=9.1.0", "nbsphinx", "sphinx-astropy", "pandoc", "sphinx-multiversion", "sphinxawesome-theme==6.0.0"]
 
 [project.urls]
@@ -58,3 +59,35 @@ namespaces = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+  "E", "W",  # pycodestyle
+  "F",       # pyflakes
+  "I",       # isort
+  "UP",      # pyupgrade
+  "B",       # flake8-bugbear
+  "NPY",     # NumPy-specific
+  "SIM",     # flake8-simplify
+  "C4",      # flake8-comprehensions
+  "COM812",  # trailing comma on multi-line constructs, so ruff explodes them one item per line
+]
+ignore = [
+  "E501",  # line length is handled by the formatter
+  "B905",  # zip() without strict=
+  "NPY002",  # legacy np.random.* calls; switching to Generator changes random streams
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["oircal"]
+force-sort-within-sections = true
+lines-after-imports = 2

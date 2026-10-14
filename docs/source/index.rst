@@ -2,7 +2,7 @@
 oircal Documentation
 ********************
 
-``oircal`` provides array-level detector and spectral calibration algorithms for visible and near-infrared astronomical instruments: ramp fitting, jump detection, detector corrections, and related utilities. Methods in this package work directly on NumPy arrays, so they can be used on their own or inside an instrument's data reduction pipeline.
+This package provides utility functions for processing and analyzing data from visible and near-infrared astronomical instruments. Methods in this package are designed to work directly with arrays of data.
 
 This package is developed at the `Optical Infrared Laboratory <https://oirlab.ucsd.edu/>`_ at the University of California San Diego.
 
@@ -14,13 +14,31 @@ Installation
    installation
 
 
-Quickstart
+Data Products
+=============
+
+.. toctree::
+   :maxdepth: 2
+
+   data_products
+
+
+Algorithms
 ==========
 
 .. toctree::
    :maxdepth: 2
 
-   quickstart
+   algorithms/index
+
+
+Simulations
+===========
+
+.. toctree::
+   :maxdepth: 2
+
+   simulations
 
 
 API
