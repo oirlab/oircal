@@ -7,13 +7,15 @@ Algorithms in ``oircal`` are designed to work directly with NumPy arrays (see :d
 
 - Most functions take a ``max_cores`` argument (default 1) to parallelize over detector rows.
 
-Each page below shows one algorithm on its own. The examples on these pages continue from the setup below, which simulates a 64 x 64 pixel up-the-ramp exposure of a flat 50 e-/s source (see :doc:`../simulations`).
+Each page below shows one algorithm on its own. The examples on these pages continue from the setup below, which simulates a 64 x 64 pixel up-the-ramp exposure of a flat 50 e-/s source (see :doc:`../simulations`) and fits it with :func:`.fit_ramps_ols` to give the rate map ``rate`` and its error ``rate_err``.
 
 .. code-block:: python
 
     import numpy as np
 
+    from oircal.ramp_fitting import fit_ramps_ols
     from oircal.simulations import create_ramp
+    from oircal.utils.read_times import get_delta_read_times, get_first_read_mjd
 
     dq_flags = {
         "GOOD": 0,
@@ -25,6 +27,9 @@ Each page below shows one algorithm on its own. The examples on these pages cont
         "UNRELIABLE_SLOPE": 2**5,
         "UNRELIABLE_FLAT": 2**6,
         "REFERENCE_PIXEL": 2**7,
+        "UNRELIABLE_BIAS": 2**8,
+        "HOT": 2**9,
+        "COLD": 2**10,
     }
 
     Nrows, Ncols = 64, 64
@@ -45,9 +50,21 @@ Each page below shows one algorithm on its own. The examples on these pages cont
         seed=0,
     )
     data = ramp["data"].astype(np.float32)  # (Nreads, Nrows, Ncols), DN
-    times = np.arange(Nreads) * readtime  # s
+    # Readout timing from the clock rate and channel layout
+    meta = ramp["meta"]
+    readout = dict(
+        clock_rate=meta["clock_rate"],
+        Nchannels=meta["n_channels"],
+        vertical=meta["channels_are_vertical"],
+    )
+    times = get_delta_read_times(Nreads, Nrows, Ncols, **readout)  # s since the first read
+    start_times = get_first_read_mjd(meta["mjd_start"], Nrows, Ncols, **readout)  # MJD
     dq_raw = np.zeros(data.shape, dtype=np.uint8)  # per-read DQ
     dq = np.zeros((Nrows, Ncols), dtype=np.uint32)  # per-pixel DQ
+
+    # Rate map for the examples that operate on rates
+    ramp_fit_result = fit_ramps_ols(times=times, input_data=data, rdnoise=read_noise, gain=gain)
+    rate, rate_err = ramp_fit_result["rate"], ramp_fit_result["rate_err"]  # (Nrows, Ncols), DN/s
 
 .. toctree::
    :maxdepth: 1
@@ -58,6 +75,7 @@ Each page below shows one algorithm on its own. The examples on these pages cont
    nonlinear_correction
    jump_detection
    ramp_fitting
+   gain
    dark_subtraction
    detector_flat
    coadd

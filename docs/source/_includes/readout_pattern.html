@@ -1,0 +1,232 @@
+<style>
+.readout-diagram {
+  --rp-ink: hsl(var(--foreground, 222.2 47.4% 11.2%));
+  --rp-muted: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
+  --rp-bg: hsl(var(--background, 0 0% 100%));
+  --rp-s1: #2a78d6; --rp-s2: #eb6834; --rp-s3: #1baf7a;
+  margin: 1.5rem 0 1rem;
+  color: var(--rp-ink);
+}
+html.dark .readout-diagram { --rp-s1: #3987e5; --rp-s2: #d95926; --rp-s3: #199e70; }
+.readout-diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.readout-diagram text { font-family: inherit; fill: var(--rp-ink); }
+.readout-diagram .rp-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 19px; font-weight: 600;
+}
+.readout-diagram .rp-sub, .readout-diagram .rp-axis, .readout-diagram .rp-hint {
+  fill: var(--rp-muted); font-size: 15.5px;
+}
+.readout-diagram .rp-label { font-size: 16px; font-weight: 500; }
+.readout-diagram .rp-hint { font-style: italic; }
+.readout-diagram .rp-num { font-size: 16px; font-variant-numeric: tabular-nums; }
+.readout-diagram .rp-cell rect {
+  fill: var(--rp-ink); fill-opacity: var(--shade); stroke: transparent; stroke-width: 2.5;
+  transition: fill-opacity .15s, stroke .15s;
+}
+.readout-diagram .rp-s1 { --rp-c: var(--rp-s1); }
+.readout-diagram .rp-s2 { --rp-c: var(--rp-s2); }
+.readout-diagram .rp-s3 { --rp-c: var(--rp-s3); }
+.readout-diagram .rp-cell.rp-s1 rect, .readout-diagram .rp-cell.rp-s2 rect,
+.readout-diagram .rp-cell.rp-s3 rect { stroke: var(--rp-c); fill: var(--rp-c); fill-opacity: .14; }
+.readout-diagram .rp-cell.rp-hl rect { fill-opacity: .3; }
+.readout-diagram .rp-hover { cursor: pointer; }
+.readout-diagram .rp-dir {
+  stroke: var(--rp-muted); stroke-width: 1.3; stroke-opacity: .75; pointer-events: none;
+}
+.readout-diagram #rp-arrow path { fill: var(--rp-muted); }
+.readout-diagram .rp-band { fill: var(--rp-ink); fill-opacity: .045; }
+.readout-diagram .rp-baseline { stroke: var(--rp-muted); stroke-opacity: .5; }
+.readout-diagram .rp-track { stroke: var(--rp-c); stroke-width: 2.5; stroke-linecap: round; }
+.readout-diagram .rp-read { fill: var(--rp-c); stroke: var(--rp-bg); stroke-width: 2; }
+.readout-diagram .rp-mid { fill: var(--rp-bg); stroke: var(--rp-c); stroke-width: 2.2; }
+.readout-diagram .rp-row { transition: opacity .15s; }
+.readout-diagram.rp-focus .rp-row:not(.rp-hl) { opacity: .2; }
+.readout-diagram .rp-legend { fill: var(--rp-muted); }
+.readout-diagram .rp-legend-mid { fill: var(--rp-bg); stroke: var(--rp-muted); stroke-width: 1.8; }
+</style>
+<div class="readout-diagram">
+<svg viewBox="0 0 1000 368" role="img" aria-labelledby="rp-desc">
+<desc id="rp-desc">Readout of a 4 by 9 pixel detector with 3 vertical channels. Each channel reads one pixel per clock tick, row by row, with every other channel reading right to left. Every read of a pixel follows its first read by a multiple of 12 ticks, so the ramps of pixels read at different ticks lag each other.</desc>
+<defs><marker id="rp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="rp-title" x="8" y="22" text-anchor="start" dominant-baseline="central">get_first_read_mjd</text>
+<text class="rp-sub" x="8" y="46" text-anchor="start" dominant-baseline="central">MJD of each pixel's first read, (Nrows, Ncols)</text>
+<text class="rp-sub" x="8" y="66" text-anchor="start" dominant-baseline="central">here in clock ticks after mjd_start</text>
+<text class="rp-label" x="96" y="100" text-anchor="middle" dominant-baseline="central">channel 1 →</text>
+<text class="rp-label" x="212" y="100" text-anchor="middle" dominant-baseline="central">channel 2 ←</text>
+<text class="rp-label" x="328" y="100" text-anchor="middle" dominant-baseline="central">channel 3 →</text>
+<text class="rp-axis" x="33" y="134" text-anchor="end" dominant-baseline="central">0</text>
+<g class="rp-cell rp-hover rp-s1" data-tick="0" data-row="0" data-col="0"><rect x="44" y="118" width="32" height="32" rx="6" style="--shade:0.040"/><text class="rp-num" x="60" y="131" text-anchor="middle" dominant-baseline="central">0</text></g>
+<g class="rp-cell" data-tick="1" data-row="0" data-col="1"><rect x="80" y="118" width="32" height="32" rx="6" style="--shade:0.058"/><text class="rp-num" x="96" y="131" text-anchor="middle" dominant-baseline="central">1</text></g>
+<g class="rp-cell" data-tick="2" data-row="0" data-col="2"><rect x="116" y="118" width="32" height="32" rx="6" style="--shade:0.076"/><text class="rp-num" x="132" y="131" text-anchor="middle" dominant-baseline="central">2</text></g>
+<g class="rp-cell" data-tick="2" data-row="0" data-col="3"><rect x="160" y="118" width="32" height="32" rx="6" style="--shade:0.076"/><text class="rp-num" x="176" y="131" text-anchor="middle" dominant-baseline="central">2</text></g>
+<g class="rp-cell" data-tick="1" data-row="0" data-col="4"><rect x="196" y="118" width="32" height="32" rx="6" style="--shade:0.058"/><text class="rp-num" x="212" y="131" text-anchor="middle" dominant-baseline="central">1</text></g>
+<g class="rp-cell rp-hover rp-s1" data-tick="0" data-row="0" data-col="5"><rect x="232" y="118" width="32" height="32" rx="6" style="--shade:0.040"/><text class="rp-num" x="248" y="131" text-anchor="middle" dominant-baseline="central">0</text></g>
+<g class="rp-cell rp-hover rp-s1" data-tick="0" data-row="0" data-col="6"><rect x="276" y="118" width="32" height="32" rx="6" style="--shade:0.040"/><text class="rp-num" x="292" y="131" text-anchor="middle" dominant-baseline="central">0</text></g>
+<g class="rp-cell" data-tick="1" data-row="0" data-col="7"><rect x="312" y="118" width="32" height="32" rx="6" style="--shade:0.058"/><text class="rp-num" x="328" y="131" text-anchor="middle" dominant-baseline="central">1</text></g>
+<g class="rp-cell" data-tick="2" data-row="0" data-col="8"><rect x="348" y="118" width="32" height="32" rx="6" style="--shade:0.076"/><text class="rp-num" x="364" y="131" text-anchor="middle" dominant-baseline="central">2</text></g>
+<line class="rp-dir" x1="50" y1="145" x2="142" y2="145" marker-end="url(#rp-arrow)"/>
+<line class="rp-dir" x1="258" y1="145" x2="166" y2="145" marker-end="url(#rp-arrow)"/>
+<line class="rp-dir" x1="282" y1="145" x2="374" y2="145" marker-end="url(#rp-arrow)"/>
+<text class="rp-axis" x="33" y="170" text-anchor="end" dominant-baseline="central">1</text>
+<g class="rp-cell" data-tick="3" data-row="1" data-col="0"><rect x="44" y="154" width="32" height="32" rx="6" style="--shade:0.095"/><text class="rp-num" x="60" y="167" text-anchor="middle" dominant-baseline="central">3</text></g>
+<g class="rp-cell rp-hover rp-s2" data-tick="4" data-row="1" data-col="1"><rect x="80" y="154" width="32" height="32" rx="6" style="--shade:0.113"/><text class="rp-num" x="96" y="167" text-anchor="middle" dominant-baseline="central">4</text></g>
+<g class="rp-cell" data-tick="5" data-row="1" data-col="2"><rect x="116" y="154" width="32" height="32" rx="6" style="--shade:0.131"/><text class="rp-num" x="132" y="167" text-anchor="middle" dominant-baseline="central">5</text></g>
+<g class="rp-cell" data-tick="5" data-row="1" data-col="3"><rect x="160" y="154" width="32" height="32" rx="6" style="--shade:0.131"/><text class="rp-num" x="176" y="167" text-anchor="middle" dominant-baseline="central">5</text></g>
+<g class="rp-cell rp-hover rp-s2" data-tick="4" data-row="1" data-col="4"><rect x="196" y="154" width="32" height="32" rx="6" style="--shade:0.113"/><text class="rp-num" x="212" y="167" text-anchor="middle" dominant-baseline="central">4</text></g>
+<g class="rp-cell" data-tick="3" data-row="1" data-col="5"><rect x="232" y="154" width="32" height="32" rx="6" style="--shade:0.095"/><text class="rp-num" x="248" y="167" text-anchor="middle" dominant-baseline="central">3</text></g>
+<g class="rp-cell" data-tick="3" data-row="1" data-col="6"><rect x="276" y="154" width="32" height="32" rx="6" style="--shade:0.095"/><text class="rp-num" x="292" y="167" text-anchor="middle" dominant-baseline="central">3</text></g>
+<g class="rp-cell rp-hover rp-s2" data-tick="4" data-row="1" data-col="7"><rect x="312" y="154" width="32" height="32" rx="6" style="--shade:0.113"/><text class="rp-num" x="328" y="167" text-anchor="middle" dominant-baseline="central">4</text></g>
+<g class="rp-cell" data-tick="5" data-row="1" data-col="8"><rect x="348" y="154" width="32" height="32" rx="6" style="--shade:0.131"/><text class="rp-num" x="364" y="167" text-anchor="middle" dominant-baseline="central">5</text></g>
+<line class="rp-dir" x1="50" y1="181" x2="142" y2="181" marker-end="url(#rp-arrow)"/>
+<line class="rp-dir" x1="258" y1="181" x2="166" y2="181" marker-end="url(#rp-arrow)"/>
+<line class="rp-dir" x1="282" y1="181" x2="374" y2="181" marker-end="url(#rp-arrow)"/>
+<text class="rp-axis" x="33" y="206" text-anchor="end" dominant-baseline="central">2</text>
+<g class="rp-cell" data-tick="6" data-row="2" data-col="0"><rect x="44" y="190" width="32" height="32" rx="6" style="--shade:0.149"/><text class="rp-num" x="60" y="203" text-anchor="middle" dominant-baseline="central">6</text></g>
+<g class="rp-cell" data-tick="7" data-row="2" data-col="1"><rect x="80" y="190" width="32" height="32" rx="6" style="--shade:0.167"/><text class="rp-num" x="96" y="203" text-anchor="middle" dominant-baseline="central">7</text></g>
+<g class="rp-cell" data-tick="8" data-row="2" data-col="2"><rect x="116" y="190" width="32" height="32" rx="6" style="--shade:0.185"/><text class="rp-num" x="132" y="203" text-anchor="middle" dominant-baseline="central">8</text></g>
+<g class="rp-cell" data-tick="8" data-row="2" data-col="3"><rect x="160" y="190" width="32" height="32" rx="6" style="--shade:0.185"/><text class="rp-num" x="176" y="203" text-anchor="middle" dominant-baseline="central">8</text></g>
+<g class="rp-cell" data-tick="7" data-row="2" data-col="4"><rect x="196" y="190" width="32" height="32" rx="6" style="--shade:0.167"/><text class="rp-num" x="212" y="203" text-anchor="middle" dominant-baseline="central">7</text></g>
+<g class="rp-cell" data-tick="6" data-row="2" data-col="5"><rect x="232" y="190" width="32" height="32" rx="6" style="--shade:0.149"/><text class="rp-num" x="248" y="203" text-anchor="middle" dominant-baseline="central">6</text></g>
+<g class="rp-cell" data-tick="6" data-row="2" data-col="6"><rect x="276" y="190" width="32" height="32" rx="6" style="--shade:0.149"/><text class="rp-num" x="292" y="203" text-anchor="middle" dominant-baseline="central">6</text></g>
+<g class="rp-cell" data-tick="7" data-row="2" data-col="7"><rect x="312" y="190" width="32" height="32" rx="6" style="--shade:0.167"/><text class="rp-num" x="328" y="203" text-anchor="middle" dominant-baseline="central">7</text></g>
+<g class="rp-cell" data-tick="8" data-row="2" data-col="8"><rect x="348" y="190" width="32" height="32" rx="6" style="--shade:0.185"/><text class="rp-num" x="364" y="203" text-anchor="middle" dominant-baseline="central">8</text></g>
+<line class="rp-dir" x1="50" y1="217" x2="142" y2="217" marker-end="url(#rp-arrow)"/>
+<line class="rp-dir" x1="258" y1="217" x2="166" y2="217" marker-end="url(#rp-arrow)"/>
+<line class="rp-dir" x1="282" y1="217" x2="374" y2="217" marker-end="url(#rp-arrow)"/>
+<text class="rp-axis" x="33" y="242" text-anchor="end" dominant-baseline="central">3</text>
+<g class="rp-cell" data-tick="9" data-row="3" data-col="0"><rect x="44" y="226" width="32" height="32" rx="6" style="--shade:0.204"/><text class="rp-num" x="60" y="239" text-anchor="middle" dominant-baseline="central">9</text></g>
+<g class="rp-cell" data-tick="10" data-row="3" data-col="1"><rect x="80" y="226" width="32" height="32" rx="6" style="--shade:0.222"/><text class="rp-num" x="96" y="239" text-anchor="middle" dominant-baseline="central">10</text></g>
+<g class="rp-cell rp-hover rp-s3" data-tick="11" data-row="3" data-col="2"><rect x="116" y="226" width="32" height="32" rx="6" style="--shade:0.240"/><text class="rp-num" x="132" y="239" text-anchor="middle" dominant-baseline="central">11</text></g>
+<g class="rp-cell rp-hover rp-s3" data-tick="11" data-row="3" data-col="3"><rect x="160" y="226" width="32" height="32" rx="6" style="--shade:0.240"/><text class="rp-num" x="176" y="239" text-anchor="middle" dominant-baseline="central">11</text></g>
+<g class="rp-cell" data-tick="10" data-row="3" data-col="4"><rect x="196" y="226" width="32" height="32" rx="6" style="--shade:0.222"/><text class="rp-num" x="212" y="239" text-anchor="middle" dominant-baseline="central">10</text></g>
+<g class="rp-cell" data-tick="9" data-row="3" data-col="5"><rect x="232" y="226" width="32" height="32" rx="6" style="--shade:0.204"/><text class="rp-num" x="248" y="239" text-anchor="middle" dominant-baseline="central">9</text></g>
+<g class="rp-cell" data-tick="9" data-row="3" data-col="6"><rect x="276" y="226" width="32" height="32" rx="6" style="--shade:0.204"/><text class="rp-num" x="292" y="239" text-anchor="middle" dominant-baseline="central">9</text></g>
+<g class="rp-cell" data-tick="10" data-row="3" data-col="7"><rect x="312" y="226" width="32" height="32" rx="6" style="--shade:0.222"/><text class="rp-num" x="328" y="239" text-anchor="middle" dominant-baseline="central">10</text></g>
+<g class="rp-cell rp-hover rp-s3" data-tick="11" data-row="3" data-col="8"><rect x="348" y="226" width="32" height="32" rx="6" style="--shade:0.240"/><text class="rp-num" x="364" y="239" text-anchor="middle" dominant-baseline="central">11</text></g>
+<line class="rp-dir" x1="50" y1="253" x2="142" y2="253" marker-end="url(#rp-arrow)"/>
+<line class="rp-dir" x1="258" y1="253" x2="166" y2="253" marker-end="url(#rp-arrow)"/>
+<line class="rp-dir" x1="282" y1="253" x2="374" y2="253" marker-end="url(#rp-arrow)"/>
+<text class="rp-axis" x="60" y="280" text-anchor="middle" dominant-baseline="central">0</text>
+<text class="rp-axis" x="96" y="280" text-anchor="middle" dominant-baseline="central">1</text>
+<text class="rp-axis" x="132" y="280" text-anchor="middle" dominant-baseline="central">2</text>
+<text class="rp-axis" x="176" y="280" text-anchor="middle" dominant-baseline="central">3</text>
+<text class="rp-axis" x="212" y="280" text-anchor="middle" dominant-baseline="central">4</text>
+<text class="rp-axis" x="248" y="280" text-anchor="middle" dominant-baseline="central">5</text>
+<text class="rp-axis" x="292" y="280" text-anchor="middle" dominant-baseline="central">6</text>
+<text class="rp-axis" x="328" y="280" text-anchor="middle" dominant-baseline="central">7</text>
+<text class="rp-axis" x="364" y="280" text-anchor="middle" dominant-baseline="central">8</text>
+<text class="rp-axis" x="212" y="304" text-anchor="middle" dominant-baseline="central">column</text>
+<text class="rp-axis" x="14" y="188" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 14 188.0)">row</text>
+<text class="rp-title" x="396" y="22" text-anchor="start" dominant-baseline="central">get_delta_read_times</text>
+<text class="rp-sub" x="396" y="46" text-anchor="start" dominant-baseline="central">time of each read after the first, (Nreads,)</text>
+<text class="rp-sub" x="396" y="66" text-anchor="start" dominant-baseline="central">same for every pixel: a read every 12 ticks</text>
+<rect class="rp-band" x="490" y="116" width="57" height="144" rx="6"/>
+<text class="rp-axis" x="518.5" y="134" text-anchor="middle" dominant-baseline="central">read 1</text>
+<text class="rp-axis" x="575.5" y="134" text-anchor="middle" dominant-baseline="central">read 2</text>
+<rect class="rp-band" x="604" y="116" width="57" height="144" rx="6"/>
+<text class="rp-axis" x="632.5" y="134" text-anchor="middle" dominant-baseline="central">read 3</text>
+<text class="rp-axis" x="689.5" y="134" text-anchor="middle" dominant-baseline="central">read 4</text>
+<g class="rp-row rp-s1" data-tick="0">
+<text class="rp-label" x="480" y="164" text-anchor="end" dominant-baseline="central">pixels #0</text>
+<line class="rp-track" x1="490" y1="164" x2="661" y2="164"/>
+<circle class="rp-read" cx="490" cy="164" r="6"/>
+<circle class="rp-read" cx="547" cy="164" r="6"/>
+<circle class="rp-read" cx="604" cy="164" r="6"/>
+<circle class="rp-read" cx="661" cy="164" r="6"/>
+<rect class="rp-mid" x="570" y="158.5" width="11" height="11" transform="rotate(45 575.5 164)"/>
+</g>
+<g class="rp-row rp-s2" data-tick="4">
+<text class="rp-label" x="480" y="200" text-anchor="end" dominant-baseline="central">pixels #4</text>
+<line class="rp-track" x1="509" y1="200" x2="680" y2="200"/>
+<circle class="rp-read" cx="509" cy="200" r="6"/>
+<circle class="rp-read" cx="566" cy="200" r="6"/>
+<circle class="rp-read" cx="623" cy="200" r="6"/>
+<circle class="rp-read" cx="680" cy="200" r="6"/>
+<rect class="rp-mid" x="589" y="194.5" width="11" height="11" transform="rotate(45 594.5 200)"/>
+</g>
+<g class="rp-row rp-s3" data-tick="11">
+<text class="rp-label" x="480" y="236" text-anchor="end" dominant-baseline="central">pixels #11</text>
+<line class="rp-track" x1="542.25" y1="236" x2="713.25" y2="236"/>
+<circle class="rp-read" cx="542.25" cy="236" r="6"/>
+<circle class="rp-read" cx="599.25" cy="236" r="6"/>
+<circle class="rp-read" cx="656.25" cy="236" r="6"/>
+<circle class="rp-read" cx="713.25" cy="236" r="6"/>
+<rect class="rp-mid" x="622.25" y="230.5" width="11" height="11" transform="rotate(45 627.75 236)"/>
+</g>
+<line class="rp-baseline" x1="490" y1="260" x2="718" y2="260"/>
+<text class="rp-axis" x="490" y="280" text-anchor="middle" dominant-baseline="central">0</text>
+<text class="rp-axis" x="547" y="280" text-anchor="middle" dominant-baseline="central">12</text>
+<text class="rp-axis" x="604" y="280" text-anchor="middle" dominant-baseline="central">24</text>
+<text class="rp-axis" x="661" y="280" text-anchor="middle" dominant-baseline="central">36</text>
+<text class="rp-axis" x="718" y="280" text-anchor="middle" dominant-baseline="central">48</text>
+<text class="rp-axis" x="604" y="304" text-anchor="middle" dominant-baseline="central">time (clock ticks)</text>
+<line class="rp-dir" x1="491" y1="330" x2="546" y2="330" marker-start="url(#rp-arrow)" marker-end="url(#rp-arrow)"/>
+<text class="rp-sub" x="555" y="330" text-anchor="start" dominant-baseline="central">12 = 4 × 3 pixels / clock_rate</text>
+<text class="rp-title" x="778" y="22" text-anchor="start" dominant-baseline="central">signal vs. time</text>
+<text class="rp-sub" x="778" y="46" text-anchor="start" dominant-baseline="central">constant source: same slope,</text>
+<text class="rp-sub" x="778" y="66" text-anchor="start" dominant-baseline="central">lagged by each first read</text>
+<line class="rp-baseline" x1="806" y1="260" x2="990" y2="260"/>
+<line class="rp-baseline" x1="806" y1="116" x2="806" y2="260"/>
+<text class="rp-axis" x="806" y="280" text-anchor="middle" dominant-baseline="central">0</text>
+<text class="rp-axis" x="852" y="280" text-anchor="middle" dominant-baseline="central">12</text>
+<text class="rp-axis" x="898" y="280" text-anchor="middle" dominant-baseline="central">24</text>
+<text class="rp-axis" x="944" y="280" text-anchor="middle" dominant-baseline="central">36</text>
+<text class="rp-axis" x="990" y="280" text-anchor="middle" dominant-baseline="central">48</text>
+<text class="rp-axis" x="898" y="304" text-anchor="middle" dominant-baseline="central">time (clock ticks)</text>
+<text class="rp-axis" x="794" y="188" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 794 188.0)">signal</text>
+<g class="rp-row rp-s1" data-tick="0">
+<line class="rp-track" x1="806" y1="260" x2="944" y2="138"/>
+<circle class="rp-read" cx="806" cy="260" r="5"/>
+<circle class="rp-read" cx="852" cy="219.333" r="5"/>
+<circle class="rp-read" cx="898" cy="178.667" r="5"/>
+<circle class="rp-read" cx="944" cy="138" r="5"/>
+<rect class="rp-mid" x="870.5" y="194.5" width="9" height="9" transform="rotate(45 875 199)"/>
+</g>
+<g class="rp-row rp-s2" data-tick="4">
+<line class="rp-track" x1="821.333" y1="260" x2="959.333" y2="138"/>
+<circle class="rp-read" cx="821.333" cy="260" r="5"/>
+<circle class="rp-read" cx="867.333" cy="219.333" r="5"/>
+<circle class="rp-read" cx="913.333" cy="178.667" r="5"/>
+<circle class="rp-read" cx="959.333" cy="138" r="5"/>
+<rect class="rp-mid" x="885.833" y="194.5" width="9" height="9" transform="rotate(45 890.333 199)"/>
+</g>
+<g class="rp-row rp-s3" data-tick="11">
+<line class="rp-track" x1="848.167" y1="260" x2="986.167" y2="138"/>
+<circle class="rp-read" cx="848.167" cy="260" r="5"/>
+<circle class="rp-read" cx="894.167" cy="219.333" r="5"/>
+<circle class="rp-read" cx="940.167" cy="178.667" r="5"/>
+<circle class="rp-read" cx="986.167" cy="138" r="5"/>
+<rect class="rp-mid" x="912.667" y="194.5" width="9" height="9" transform="rotate(45 917.167 199)"/>
+</g>
+<line class="rp-dir" x1="945" y1="126" x2="985.167" y2="126" marker-start="url(#rp-arrow)" marker-end="url(#rp-arrow)"/>
+<text class="rp-sub" x="986.167" y="110" text-anchor="end" dominant-baseline="central">11 tick lag</text>
+<text class="rp-hint" x="8" y="356" text-anchor="start" dominant-baseline="central" id="rp-info">Hover a colored pixel to see when it is read.</text>
+<circle class="rp-legend" cx="810" cy="356" r="6"/>
+<text class="rp-axis" x="822" y="356" text-anchor="start" dominant-baseline="central">read</text>
+<rect class="rp-legend rp-legend-mid" x="879" y="351" width="10" height="10" transform="rotate(45 884 356)"/>
+<text class="rp-axis" x="896" y="356" text-anchor="start" dominant-baseline="central">mid_time</text>
+</svg>
+</div>
+<script>
+(() => {
+  const root = document.currentScript.previousElementSibling;
+  const info = root.querySelector("#rp-info");
+  const hint = info.textContent;
+  const period = 12, Nreads = 4, mid = 18;
+  root.querySelectorAll(".rp-hover").forEach((cell) => {
+    cell.addEventListener("pointerenter", () => {
+      const t = Number(cell.dataset.tick);
+      root.querySelectorAll(`[data-tick="${t}"]`).forEach((el) => el.classList.add("rp-hl"));
+      root.classList.toggle("rp-focus", !!root.querySelector(`.rp-row[data-tick="${t}"]`));
+      const reads = Array.from({length: Nreads}, (_, k) => t + k * period).join(", ");
+      info.textContent = `Pixel (${cell.dataset.row}, ${cell.dataset.col}): reads at ticks ` +
+        `${reads}; mid_time at ${t + mid}. One pixel per channel shares these times.`;
+    });
+    cell.addEventListener("pointerleave", () => {
+      root.querySelectorAll(".rp-hl").forEach((el) => el.classList.remove("rp-hl"));
+      root.classList.remove("rp-focus");
+      info.textContent = hint;
+    });
+  });
+})();
+</script>

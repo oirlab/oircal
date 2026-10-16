@@ -1,14 +1,37 @@
 Non-linearity
 =============
 
-Two functions are provided: :func:`.fit_nonlin_coefs` fits non-linearity correction coefficients from a set of flat-field ramps, and :func:`.correct_nonlinearity` applies correction coefficients to ramps.
 
-Fitting the coefficients
-------------------------
+Correcting Nonlinearity
+-----------------------
+
+:func:`.correct_nonlinearity` subtracts the first read, applies the polynomial, and adds the first read back, so the corrected ramp keeps its bias. Reads above ``nonlin_max`` are flagged ``NON_LINEAR | DO_NOT_USE`` in ``dq_raw``, and the DQ map from the non-linearity calibration (``nonlin_dq``) is OR'ed into ``dq``. The ramps must be floating point. Only ``input_data`` and ``coeffs`` are required; the flagging and DQ propagation run only when their inputs are given.
+
+.. code-block:: python
+
+    from oircal.nonlinear_correction import correct_nonlinearity
+
+    # Coefficients for the 64 x 64 science ramp: the identity polynomial P(x) = x
+    coeffs = np.zeros((2, Nrows, Ncols))
+    coeffs[1] = 1.0
+    nonlin_max = np.full((Nrows, Ncols), 60000.0, dtype=np.float32)  # DN
+    nonlin_dq = np.zeros((Nrows, Ncols), dtype=np.uint32)
+    correct_nonlinearity(
+        input_data=data,
+        coeffs=coeffs,
+        input_dq_raw=dq_raw,
+        input_dq=dq,
+        nonlin_max=nonlin_max,
+        nonlin_dq=nonlin_dq,
+        dq_flags=dq_flags,
+    )
+
+Make Nonlinearity
+-----------------
 
 :func:`.fit_nonlin_coefs` takes a 4D stack of ramps, ``(Nfiles, Nreads, Nrows, Ncols)``, that run up to saturation. It fits a polynomial (default order 5) that maps measured counts to linear counts. ``mode="per_pixel"`` fits each pixel; ``mode="full_detector"`` fits one polynomial to the whole detector.
 
-The example below simulates bright flats with a quadratic non-linearity, flags saturation, and fits the correction:
+Each pixel's polynomial is fit to all of its ramps. The example below simulates four flats of a 4 x 4 region with a quadratic non-linearity that run up to saturation, flags the saturated reads of each, and fits the correction:
 
 .. code-block:: python
 
@@ -23,7 +46,7 @@ The example below simulates bright flats with a quadratic non-linearity, flags s
     sat_thresh = np.full(shape, 65535, dtype=np.uint16)
 
     flat_ramps, flat_dq_raw = [], []
-    for _ in range(Nfiles):
+    for seed in range(Nfiles):
         flat = create_ramp(
             source=np.full(shape, 1000.0),
             readtime=readtime,
@@ -34,6 +57,7 @@ The example below simulates bright flats with a quadratic non-linearity, flags s
             kTC_noise=0,
             nonlin_coeffs=[-1e-6, 1, 0],
             poisson_noise=False,
+            seed=seed,
         )
         ramps_i = flat["data"]
         dq_raw_i = np.zeros(ramps_i.shape, dtype=np.uint8)
@@ -60,27 +84,3 @@ The example below simulates bright flats with a quadratic non-linearity, flags s
     )
 
 ``nonlin_coeffs`` has shape ``(order + 1, Nrows, Ncols)``, lowest degree first. ``nonlin_thresh`` is the level (DN) where counts deviate from linear by 1%, and ``nonlin_max`` is the level beyond which the correction is no longer reliable (10% by default; see ``criterion_for_nonlin_thresh`` and ``criterion_for_nonlin_max``).
-
-Applying the correction
------------------------
-
-:func:`.correct_nonlinearity` subtracts the first read, applies the polynomial, and adds the first read back, so the corrected ramp keeps its bias. Reads above ``nonlin_max`` are flagged ``NON_LINEAR | DO_NOT_USE`` in ``dq_raw``, and the DQ map from the non-linearity calibration (``nonlin_dq``) is OR'ed into ``dq``. The ramps must be floating point. Only ``input_data`` and ``coeffs`` are required; the flagging and DQ propagation run only when their inputs are given.
-
-.. code-block:: python
-
-    from oircal.nonlinear_correction import correct_nonlinearity
-
-    # Coefficients for the 64 x 64 science ramp: the identity polynomial P(x) = x
-    coeffs = np.zeros((2, Nrows, Ncols))
-    coeffs[1] = 1.0
-    nonlin_max = np.full((Nrows, Ncols), 60000.0, dtype=np.float32)  # DN
-    nonlin_dq = np.zeros((Nrows, Ncols), dtype=np.uint32)
-    correct_nonlinearity(
-        input_data=data,
-        coeffs=coeffs,
-        input_dq_raw=dq_raw,
-        input_dq=dq,
-        nonlin_max=nonlin_max,
-        nonlin_dq=nonlin_dq,
-        dq_flags=dq_flags,
-    )

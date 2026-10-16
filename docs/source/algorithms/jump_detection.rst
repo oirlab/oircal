@@ -1,14 +1,14 @@
 Jump Detection
 ==============
 
-Jump detection finds reads where the counts change abruptly, e.g. from a cosmic ray hit, and flags them ``JUMP_DET`` in ``dq_raw``. The ramp fitting functions fit the segments on either side of a flagged jump separately.
+Jump detection finds reads where the counts change abruptly, e.g. from a cosmic ray hit, and flags them as ``JUMP_DET`` in ``dq_raw``. The ramp fitting functions fit the segments on either side of a flagged jump separately.
 
 Two implementations are available.
 
 Read differences
 ----------------
 
-:func:`.jump_detection_difference` compares each difference between successive reads to the pixel's median difference, and flags reads that differ by more than ``rejection_threshold`` sigma. Reads already flagged ``SATURATED`` or ``DO_NOT_USE`` are ignored.
+:func:`.jump_detection_difference` compares each difference between successive reads to the pixel's median difference, and flags reads that differ by more than ``rejection_threshold`` sigma. Reads at the end of the ramp flagged ``SATURATED`` or ``DO_NOT_USE`` are left out.
 
 .. code-block:: python
 
