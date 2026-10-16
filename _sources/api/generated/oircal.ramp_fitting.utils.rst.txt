@@ -1,0 +1,14 @@
+oircal.ramp\_fitting.utils
+==========================
+
+.. automodule:: oircal.ramp_fitting.utils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      bitwise_or_reduce
+      mean_numba_if_not_zero
+      seconds_to_mjd_offset
+   

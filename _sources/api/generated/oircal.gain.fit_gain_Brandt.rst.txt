@@ -1,0 +1,13 @@
+oircal.gain.fit\_gain\_Brandt
+=============================
+
+.. automodule:: oircal.gain.fit_gain_Brandt
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      fitquad
+      gen_likelihood_map
+   

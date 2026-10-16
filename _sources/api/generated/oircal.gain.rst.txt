@@ -1,0 +1,16 @@
+﻿oircal.gain
+===========
+
+.. automodule:: oircal.gain
+   :no-members:
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fit_gain
+   fit_gain_Brandt
+   gain_correction

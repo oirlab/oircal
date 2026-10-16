@@ -1,0 +1,20 @@
+oircal.nonlinear\_correction.calc\_nonlin\_coefs\_Brandt
+========================================================
+
+.. automodule:: oircal.nonlinear_correction.calc_nonlin_coefs_Brandt
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      calc_A_matrix
+      get_nonlin_coefs
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Covar
+      Nonlin_Result
+   

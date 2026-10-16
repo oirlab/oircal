@@ -1,0 +1,14 @@
+oircal.utils.parallelization\_utils
+===================================
+
+.. automodule:: oircal.utils.parallelization_utils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      numba_thread_scope
+      resolve_numba_threads
+      shared_array_to_numpy
+   

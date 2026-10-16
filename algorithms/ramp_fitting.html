@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html :class="{ 'dark' : darkMode === true }" data-content_root="../" lang="en" x-data="{ darkMode: $persist(window.matchMedia('(prefers-color-scheme: dark)').matches), activeSection: ''}">
+<head>
+<script>
+    (function () {
+      // Set initial color scheme
+      if ((localStorage.getItem("_x_darkMode") === "true") || (window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.classList.add("dark");
+      }
+
+      // Watch for media preference changes
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+        localStorage.setItem("_x_darkMode", event.matches);
+        document.documentElement.classList.toggle("dark", event.matches);
+      });
+    })();
+  </script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<meta content="#ffffff" media="(prefers-color-scheme: light)" name="theme-color"/>
+<meta content="#030711" media="(prefers-color-scheme: dark)" name="theme-color"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Up the Ramp Fitting | oircal  documentation</title>
+<meta content="Up the Ramp Fitting | oircal  documentation" property="og:title"/>
+<meta content="Up the Ramp Fitting | oircal  documentation" name="twitter:title"/>
+<link href="../_static/pygments.css?v=d862e8e8" rel="stylesheet" type="text/css"/>
+<link href="../_static/pygments_dark.css" id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css"/>
+<link href="../_static/theme.css?v=73505e79" rel="stylesheet" type="text/css"/>
+<link href="../_static/custom.css?v=6de5b0a6" rel="stylesheet" type="text/css"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="gain.html" rel="next" title="Gain and Read Noise"/>
+<link href="jump_detection.html" rel="prev" title="Jump Detection"/>
+</head>
+<body :class="{ 'overflow-hidden': showSidebar }" class="min-h-screen font-sans antialiased bg-background text-foreground" x-data="{ showSidebar: false, showScrollTop: false }">
+<div @click.self="showSidebar = false" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" x-cloak="" x-show="showSidebar"></div><div class="relative flex flex-col min-h-screen" id="page"><a class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100" href="#content">
+      Skip to content
+    </a><header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur"><div class="container flex items-center h-14">
+<div class="hidden mr-4 md:flex">
+<a class="flex items-center mr-6" href="../index.html">
+<img alt="Logo" class="mr-2 hidden dark:block" height="24" src="../_static/oirlab_logo_dark.png" width="24"/>
+<img alt="Logo" class="mr-2 dark:hidden" height="24" src="../_static/oirlab_logo_light.png" width="24"/><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">oircal  documentation</span>
+</a></div><button @click="showSidebar = true" class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden" type="button">
+<svg aria-hidden="true" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M152.587 825.087q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440Zm0-203.587q-19.152 0-32.326-13.174T107.087 576q0-19.152 13.174-32.326t32.326-13.174h320q19.152 0 32.326 13.174T518.087 576q0 19.152-13.174 32.326T472.587 621.5h-320Zm0-203.587q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440ZM708.913 576l112.174 112.174q12.674 12.674 12.674 31.826t-12.674 31.826Q808.413 764.5 789.261 764.5t-31.826-12.674l-144-144Q600 594.391 600 576t13.435-31.826l144-144q12.674-12.674 31.826-12.674t31.826 12.674q12.674 12.674 12.674 31.826t-12.674 31.826L708.913 576Z"></path>
+</svg>
+<span class="sr-only">Toggle navigation menu</span>
+</button>
+<div class="flex items-center justify-between flex-1 gap-2 sm:gap-4 md:justify-end">
+<div class="flex-1 w-full md:w-auto md:flex-none"><form @keydown.k.window.meta="$refs.search.focus()" action="../search.html" class="relative flex items-center group" id="searchbox" method="get">
+<input aria-label="Search the docs" class="inline-flex items-center font-medium transition-colors bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background border border-input hover:bg-accent focus:bg-accent hover:text-accent-foreground focus:text-accent-foreground hover:placeholder-accent-foreground py-2 px-4 relative h-9 w-full justify-start rounded-[0.5rem] text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64" id="search-input" name="q" placeholder="Search ..." type="search" x-ref="search"/>
+<kbd class="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none text-muted-foreground items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex group-hover:bg-accent group-hover:text-accent-foreground">
+<span class="text-xs">⌘</span>
+    K
+  </kbd>
+</form>
+</div>
+<nav class="flex items-center gap-1">
+<button @click="darkMode = !darkMode" class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9" title="Toggle color scheme" type="button">
+<svg class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0" fill="currentColor" height="16" viewbox="0 96 960 960" width="16" xmlns="http://www.w3.org/2000/svg">
+<path d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z"></path>
+</svg>
+<svg class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100" fill="currentColor" height="16" viewbox="0 96 960 960" width="16" xmlns="http://www.w3.org/2000/svg">
+<path d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z"></path>
+</svg>
+</button>
+</nav>
+</div>
+</div>
+</header>
+<div class="flex-1"><div class="container md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }" class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky" id="left-sidebar">
+<a class="justify-start text-sm md:!hidden bg-background" href="../index.html">
+<img alt="Logo" class="mr-2 hidden dark:block" height="16" src="../_static/oirlab_logo_dark.png" width="16"/>
+<img alt="Logo" class="mr-2 dark:hidden" height="16" src="../_static/oirlab_logo_light.png" width="16"/><span class="font-bold text-clip whitespace-nowrap">oircal  documentation</span>
+</a>
+<div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
+<div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data_products.html">Data Products</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current" x-data="{ expanded: $el.classList.contains('current') ? true : false }"><a :class="{ 'expanded' : expanded }" @click="expanded = !expanded" class="reference internal expandable" href="index.html">Algorithms<button @click.prevent.stop="expanded = !expanded" type="button" x-cloak=""><span class="sr-only"></span><svg fill="currentColor" height="18px" stroke="none" viewbox="0 0 24 24" width="18px" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg></button></a><ul class="current" x-show="expanded">
+<li class="toctree-l2"><a class="reference internal" href="saturation.html">Saturation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bias_subtraction.html">Bias Subtraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="refpix.html">Reference Pixel Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nonlinear_correction.html">Non-linearity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jump_detection.html">Jump Detection</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Up the Ramp Fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gain.html">Gain and Read Noise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dark_subtraction.html">Dark Subtraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="detector_flat.html">Detector Flat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coadd.html">Coadding</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../simulations.html">Simulations</a></li>
+</ul>
+<ul>
+<li class="toctree-l1" x-data="{ expanded: $el.classList.contains('current') ? true : false }"><a :class="{ 'expanded' : expanded }" @click="expanded = !expanded" class="reference internal expandable" href="../api/api.html">API Reference<button @click.prevent.stop="expanded = !expanded" type="button" x-cloak=""><span class="sr-only"></span><svg fill="currentColor" height="18px" stroke="none" viewbox="0 0 24 24" width="18px" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg></button></a><ul x-cloak="" x-show="expanded">
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.bias_subtraction.html">oircal.bias_subtraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.coadd.html">oircal.coadd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.dark_subtraction.html">oircal.dark_subtraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.detector_flat.html">oircal.detector_flat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.gain.html">oircal.gain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.jump_detection.html">oircal.jump_detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.nonlinear_correction.html">oircal.nonlinear_correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.ramp_fitting.html">oircal.ramp_fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.refpix.html">oircal.refpix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.saturation.html">oircal.saturation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.simulations.html">oircal.simulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/generated/oircal.utils.html">oircal.utils</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+<button @click="showSidebar = false" class="absolute md:hidden right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100" type="button">
+<svg class="h-4 w-4" fill="currentColor" height="24" stroke="none" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M480 632 284 828q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536 576l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480 632Z"></path>
+</svg>
+</button>
+</aside>
+<main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+<div class="w-full min-w-0 mx-auto">
+<nav aria-label="breadcrumbs" class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
+<a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground" href="../index.html">
+<span class="hidden md:inline">oircal  documentation</span>
+<svg aria-label="Home" class="md:hidden" fill="currentColor" height="18" stroke="none" viewbox="0 96 960 960" width="18" xmlns="http://www.w3.org/2000/svg">
+<path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z"></path>
+</svg>
+</a>
+<div class="mr-1">/</div><a class="hover:text-foreground overflow-hidden text-ellipsis whitespace-nowrap" href="index.html">Algorithms</a>
+<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">Up the Ramp Fitting</span>
+</nav>
+<div id="content" role="main">
+<section id="up-the-ramp-fitting">
+<h1>Up the Ramp Fitting<a class="headerlink" href="#up-the-ramp-fitting" title="Link to this heading"><svg height="1em" viewbox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path></svg></a></h1>
+<p>Ramp fitting turns up-the-ramp data <code class="docutils literal notranslate"><span class="pre">(Nreads,</span> <span class="pre">Nrows,</span> <span class="pre">Ncols)</span></code> into a 2D rate image (DN/s). All three functions take the read times, the ramps, and optionally the DQ arrays, read noise and gain, and return a dict of 2D arrays:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rate</span></code>, <code class="docutils literal notranslate"><span class="pre">rate_err</span></code>: the rate and its uncertainty (DN/s).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rate_var_rnoise</span></code>, <code class="docutils literal notranslate"><span class="pre">rate_var_poisson</span></code>: the read noise and Poisson contributions to the variance.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dq</span></code>: the per-pixel DQ, including flags propagated from <code class="docutils literal notranslate"><span class="pre">dq_raw</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mid_time</span></code>: the mid time of the valid reads (MJD if <code class="docutils literal notranslate"><span class="pre">start_times</span></code> is given).</p></li>
+</ul>
+<p>Pixels whose fit fails get NaN for the rate, its error and its variances, and are flagged <code class="docutils literal notranslate"><span class="pre">DO_NOT_USE</span></code> in <code class="docutils literal notranslate"><span class="pre">dq</span></code> when <code class="docutils literal notranslate"><span class="pre">dq_flags</span></code> is given.</p>
+<section id="read-times">
+<h2>Read times<a class="headerlink" href="#read-times" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#read-times'"><svg height="1em" viewbox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path></svg></a></h2>
+<p>HxRG arrays integrate continuously and are read non-destructively: each readout channel samples its pixels one at a time at the pixel clock rate, so different pixels are read at different times. Ramp fitting needs this timing in two forms:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">times</span></code> is the time of each read in seconds since the first read, shape <code class="docutils literal notranslate"><span class="pre">(Nreads,)</span></code>. The same offsets apply to every pixel. <a class="reference internal" href="../api/generated/oircal.utils.read_times.html#oircal.utils.read_times.get_delta_read_times" title="oircal.utils.read_times.get_delta_read_times"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_delta_read_times()</span></code></a> computes them from the detector size, number of channels and clock rate.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_times</span></code> (optional) is the MJD of each pixel’s first read, shape <code class="docutils literal notranslate"><span class="pre">(Nrows,</span> <span class="pre">Ncols)</span></code>, and puts <code class="docutils literal notranslate"><span class="pre">mid_time</span></code> in MJD. <a class="reference internal" href="../api/generated/oircal.utils.read_times.html#oircal.utils.read_times.get_first_read_mjd" title="oircal.utils.read_times.get_first_read_mjd"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_first_read_mjd()</span></code></a> computes it from the readout start, the channel layout and each channel’s read direction.</p></li>
+</ul>
+<p>Consecutive reads are one frame time apart, the time for each channel to read all of its pixels at one pixel per clock tick:</p>
+<div class="math notranslate nohighlight">
+\[t_\mathrm{frame} = \frac{N_\mathrm{rows} \, N_\mathrm{cols,chan}}{f_\mathrm{clock}} = \frac{N_\mathrm{rows} \, N_\mathrm{cols}}{N_\mathrm{channels} \, f_\mathrm{clock}},\]</div>
+<p>where <span class="math notranslate nohighlight">\(f_\mathrm{clock}\)</span> is the pixel clock rate (<code class="docutils literal notranslate"><span class="pre">clock_rate</span></code>) and <span class="math notranslate nohighlight">\(N_\mathrm{cols,chan} = N_\mathrm{cols} / N_\mathrm{channels}\)</span> is the width of each vertical channel. Read <span class="math notranslate nohighlight">\(k\)</span> is then at <code class="docutils literal notranslate"><span class="pre">times[k]</span></code> <span class="math notranslate nohighlight">\(= k \, t_\mathrm{frame}\)</span>, for <span class="math notranslate nohighlight">\(k = 0, 1, \ldots, N_\mathrm{reads} - 1\)</span>.</p>
+<p id="mid-time">Each pixel’s <code class="docutils literal notranslate"><span class="pre">mid_time</span></code> (MJD) is its first read plus the mean time of its usable read differences, not weighted by flux:</p>
+<div class="math notranslate nohighlight">
+\[t_\mathrm{mid} = t_\mathrm{start} + \frac{1}{86400 \, |U|} \sum_{k \in U} \frac{t_k + t_{k+1}}{2},\]</div>
+<p>where <span class="math notranslate nohighlight">\(t_\mathrm{start}\)</span> is the pixel’s <code class="docutils literal notranslate"><span class="pre">start_times</span></code> (MJD), <span class="math notranslate nohighlight">\(t_k\)</span> is <code class="docutils literal notranslate"><span class="pre">times[k]</span></code> (s) and 86400 converts seconds to days. <span class="math notranslate nohighlight">\(U\)</span> holds the differences <span class="math notranslate nohighlight">\(k \to k+1\)</span> where neither read is flagged <code class="docutils literal notranslate"><span class="pre">DO_NOT_USE</span></code> or <code class="docutils literal notranslate"><span class="pre">SATURATED</span></code> and read <span class="math notranslate nohighlight">\(k+1\)</span> is not flagged <code class="docutils literal notranslate"><span class="pre">JUMP_DET</span></code>. With no flagged reads, this reduces to</p>
+<div class="math notranslate nohighlight">
+\[t_\mathrm{mid} = t_\mathrm{start} + \frac{(N_\mathrm{reads} - 1) \, t_\mathrm{frame}}{2 \times 86400}.\]</div>
+<p>The diagram below shows the readout timing of a small detector.</p>
+<style>
+.readout-diagram {
+  --rp-ink: hsl(var(--foreground, 222.2 47.4% 11.2%));
+  --rp-muted: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
+  --rp-bg: hsl(var(--background, 0 0% 100%));
+  --rp-s1: #2a78d6; --rp-s2: #eb6834; --rp-s3: #1baf7a;
+  margin: 1.5rem 0 1rem;
+  color: var(--rp-ink);
+}
+html.dark .readout-diagram { --rp-s1: #3987e5; --rp-s2: #d95926; --rp-s3: #199e70; }
+.readout-diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.readout-diagram text { font-family: inherit; fill: var(--rp-ink); }
+.readout-diagram .rp-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 19px; font-weight: 600;
+}
+.readout-diagram .rp-sub, .readout-diagram .rp-axis, .readout-diagram .rp-hint {
+  fill: var(--rp-muted); font-size: 15.5px;
+}
+.readout-diagram .rp-label { font-size: 16px; font-weight: 500; }
+.readout-diagram .rp-hint { font-style: italic; }
+.readout-diagram .rp-num { font-size: 16px; font-variant-numeric: tabular-nums; }
+.readout-diagram .rp-cell rect {
+  fill: var(--rp-ink); fill-opacity: var(--shade); stroke: transparent; stroke-width: 2.5;
+  transition: fill-opacity .15s, stroke .15s;
+}
+.readout-diagram .rp-s1 { --rp-c: var(--rp-s1); }
+.readout-diagram .rp-s2 { --rp-c: var(--rp-s2); }
+.readout-diagram .rp-s3 { --rp-c: var(--rp-s3); }
+.readout-diagram .rp-cell.rp-s1 rect, .readout-diagram .rp-cell.rp-s2 rect,
+.readout-diagram .rp-cell.rp-s3 rect { stroke: var(--rp-c); fill: var(--rp-c); fill-opacity: .14; }
+.readout-diagram .rp-cell.rp-hl rect { fill-opacity: .3; }
+.readout-diagram .rp-hover { cursor: pointer; }
+.readout-diagram .rp-dir {
+  stroke: var(--rp-muted); stroke-width: 1.3; stroke-opacity: .75; pointer-events: none;
+}
+.readout-diagram #rp-arrow path { fill: var(--rp-muted); }
+.readout-diagram .rp-band { fill: var(--rp-ink); fill-opacity: .045; }
+.readout-diagram .rp-baseline { stroke: var(--rp-muted); stroke-opacity: .5; }
+.readout-diagram .rp-track { stroke: var(--rp-c); stroke-width: 2.5; stroke-linecap: round; }
+.readout-diagram .rp-read { fill: var(--rp-c); stroke: var(--rp-bg); stroke-width: 2; }
+.readout-diagram .rp-mid { fill: var(--rp-bg); stroke: var(--rp-c); stroke-width: 2.2; }
+.readout-diagram .rp-row { transition: opacity .15s; }
+.readout-diagram.rp-focus .rp-row:not(.rp-hl) { opacity: .2; }
+.readout-diagram .rp-legend { fill: var(--rp-muted); }
+.readout-diagram .rp-legend-mid { fill: var(--rp-bg); stroke: var(--rp-muted); stroke-width: 1.8; }
+</style>
+<div class="readout-diagram">
+<svg aria-labelledby="rp-desc" role="img" viewbox="0 0 1000 368">
+<desc id="rp-desc">Readout of a 4 by 9 pixel detector with 3 vertical channels. Each channel reads one pixel per clock tick, row by row, with every other channel reading right to left. Every read of a pixel follows its first read by a multiple of 12 ticks, so the ramps of pixels read at different ticks lag each other.</desc>
+<defs><marker id="rp-arrow" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="8" refy="5" viewbox="0 0 10 10"><path d="M0,0 L10,5 L0,10 z"></path></marker></defs>
+<text class="rp-title" dominant-baseline="central" text-anchor="start" x="8" y="22">get_first_read_mjd</text>
+<text class="rp-sub" dominant-baseline="central" text-anchor="start" x="8" y="46">MJD of each pixel's first read, (Nrows, Ncols)</text>
+<text class="rp-sub" dominant-baseline="central" text-anchor="start" x="8" y="66">here in clock ticks after mjd_start</text>
+<text class="rp-label" dominant-baseline="central" text-anchor="middle" x="96" y="100">channel 1 →</text>
+<text class="rp-label" dominant-baseline="central" text-anchor="middle" x="212" y="100">channel 2 ←</text>
+<text class="rp-label" dominant-baseline="central" text-anchor="middle" x="328" y="100">channel 3 →</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="end" x="33" y="134">0</text>
+<g class="rp-cell rp-hover rp-s1" data-col="0" data-row="0" data-tick="0"><rect height="32" rx="6" style="--shade:0.040" width="32" x="44" y="118"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="60" y="131">0</text></g>
+<g class="rp-cell" data-col="1" data-row="0" data-tick="1"><rect height="32" rx="6" style="--shade:0.058" width="32" x="80" y="118"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="96" y="131">1</text></g>
+<g class="rp-cell" data-col="2" data-row="0" data-tick="2"><rect height="32" rx="6" style="--shade:0.076" width="32" x="116" y="118"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="132" y="131">2</text></g>
+<g class="rp-cell" data-col="3" data-row="0" data-tick="2"><rect height="32" rx="6" style="--shade:0.076" width="32" x="160" y="118"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="176" y="131">2</text></g>
+<g class="rp-cell" data-col="4" data-row="0" data-tick="1"><rect height="32" rx="6" style="--shade:0.058" width="32" x="196" y="118"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="212" y="131">1</text></g>
+<g class="rp-cell rp-hover rp-s1" data-col="5" data-row="0" data-tick="0"><rect height="32" rx="6" style="--shade:0.040" width="32" x="232" y="118"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="248" y="131">0</text></g>
+<g class="rp-cell rp-hover rp-s1" data-col="6" data-row="0" data-tick="0"><rect height="32" rx="6" style="--shade:0.040" width="32" x="276" y="118"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="292" y="131">0</text></g>
+<g class="rp-cell" data-col="7" data-row="0" data-tick="1"><rect height="32" rx="6" style="--shade:0.058" width="32" x="312" y="118"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="328" y="131">1</text></g>
+<g class="rp-cell" data-col="8" data-row="0" data-tick="2"><rect height="32" rx="6" style="--shade:0.076" width="32" x="348" y="118"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="364" y="131">2</text></g>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="50" x2="142" y1="145" y2="145"></line>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="258" x2="166" y1="145" y2="145"></line>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="282" x2="374" y1="145" y2="145"></line>
+<text class="rp-axis" dominant-baseline="central" text-anchor="end" x="33" y="170">1</text>
+<g class="rp-cell" data-col="0" data-row="1" data-tick="3"><rect height="32" rx="6" style="--shade:0.095" width="32" x="44" y="154"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="60" y="167">3</text></g>
+<g class="rp-cell rp-hover rp-s2" data-col="1" data-row="1" data-tick="4"><rect height="32" rx="6" style="--shade:0.113" width="32" x="80" y="154"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="96" y="167">4</text></g>
+<g class="rp-cell" data-col="2" data-row="1" data-tick="5"><rect height="32" rx="6" style="--shade:0.131" width="32" x="116" y="154"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="132" y="167">5</text></g>
+<g class="rp-cell" data-col="3" data-row="1" data-tick="5"><rect height="32" rx="6" style="--shade:0.131" width="32" x="160" y="154"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="176" y="167">5</text></g>
+<g class="rp-cell rp-hover rp-s2" data-col="4" data-row="1" data-tick="4"><rect height="32" rx="6" style="--shade:0.113" width="32" x="196" y="154"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="212" y="167">4</text></g>
+<g class="rp-cell" data-col="5" data-row="1" data-tick="3"><rect height="32" rx="6" style="--shade:0.095" width="32" x="232" y="154"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="248" y="167">3</text></g>
+<g class="rp-cell" data-col="6" data-row="1" data-tick="3"><rect height="32" rx="6" style="--shade:0.095" width="32" x="276" y="154"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="292" y="167">3</text></g>
+<g class="rp-cell rp-hover rp-s2" data-col="7" data-row="1" data-tick="4"><rect height="32" rx="6" style="--shade:0.113" width="32" x="312" y="154"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="328" y="167">4</text></g>
+<g class="rp-cell" data-col="8" data-row="1" data-tick="5"><rect height="32" rx="6" style="--shade:0.131" width="32" x="348" y="154"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="364" y="167">5</text></g>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="50" x2="142" y1="181" y2="181"></line>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="258" x2="166" y1="181" y2="181"></line>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="282" x2="374" y1="181" y2="181"></line>
+<text class="rp-axis" dominant-baseline="central" text-anchor="end" x="33" y="206">2</text>
+<g class="rp-cell" data-col="0" data-row="2" data-tick="6"><rect height="32" rx="6" style="--shade:0.149" width="32" x="44" y="190"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="60" y="203">6</text></g>
+<g class="rp-cell" data-col="1" data-row="2" data-tick="7"><rect height="32" rx="6" style="--shade:0.167" width="32" x="80" y="190"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="96" y="203">7</text></g>
+<g class="rp-cell" data-col="2" data-row="2" data-tick="8"><rect height="32" rx="6" style="--shade:0.185" width="32" x="116" y="190"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="132" y="203">8</text></g>
+<g class="rp-cell" data-col="3" data-row="2" data-tick="8"><rect height="32" rx="6" style="--shade:0.185" width="32" x="160" y="190"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="176" y="203">8</text></g>
+<g class="rp-cell" data-col="4" data-row="2" data-tick="7"><rect height="32" rx="6" style="--shade:0.167" width="32" x="196" y="190"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="212" y="203">7</text></g>
+<g class="rp-cell" data-col="5" data-row="2" data-tick="6"><rect height="32" rx="6" style="--shade:0.149" width="32" x="232" y="190"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="248" y="203">6</text></g>
+<g class="rp-cell" data-col="6" data-row="2" data-tick="6"><rect height="32" rx="6" style="--shade:0.149" width="32" x="276" y="190"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="292" y="203">6</text></g>
+<g class="rp-cell" data-col="7" data-row="2" data-tick="7"><rect height="32" rx="6" style="--shade:0.167" width="32" x="312" y="190"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="328" y="203">7</text></g>
+<g class="rp-cell" data-col="8" data-row="2" data-tick="8"><rect height="32" rx="6" style="--shade:0.185" width="32" x="348" y="190"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="364" y="203">8</text></g>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="50" x2="142" y1="217" y2="217"></line>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="258" x2="166" y1="217" y2="217"></line>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="282" x2="374" y1="217" y2="217"></line>
+<text class="rp-axis" dominant-baseline="central" text-anchor="end" x="33" y="242">3</text>
+<g class="rp-cell" data-col="0" data-row="3" data-tick="9"><rect height="32" rx="6" style="--shade:0.204" width="32" x="44" y="226"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="60" y="239">9</text></g>
+<g class="rp-cell" data-col="1" data-row="3" data-tick="10"><rect height="32" rx="6" style="--shade:0.222" width="32" x="80" y="226"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="96" y="239">10</text></g>
+<g class="rp-cell rp-hover rp-s3" data-col="2" data-row="3" data-tick="11"><rect height="32" rx="6" style="--shade:0.240" width="32" x="116" y="226"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="132" y="239">11</text></g>
+<g class="rp-cell rp-hover rp-s3" data-col="3" data-row="3" data-tick="11"><rect height="32" rx="6" style="--shade:0.240" width="32" x="160" y="226"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="176" y="239">11</text></g>
+<g class="rp-cell" data-col="4" data-row="3" data-tick="10"><rect height="32" rx="6" style="--shade:0.222" width="32" x="196" y="226"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="212" y="239">10</text></g>
+<g class="rp-cell" data-col="5" data-row="3" data-tick="9"><rect height="32" rx="6" style="--shade:0.204" width="32" x="232" y="226"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="248" y="239">9</text></g>
+<g class="rp-cell" data-col="6" data-row="3" data-tick="9"><rect height="32" rx="6" style="--shade:0.204" width="32" x="276" y="226"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="292" y="239">9</text></g>
+<g class="rp-cell" data-col="7" data-row="3" data-tick="10"><rect height="32" rx="6" style="--shade:0.222" width="32" x="312" y="226"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="328" y="239">10</text></g>
+<g class="rp-cell rp-hover rp-s3" data-col="8" data-row="3" data-tick="11"><rect height="32" rx="6" style="--shade:0.240" width="32" x="348" y="226"></rect><text class="rp-num" dominant-baseline="central" text-anchor="middle" x="364" y="239">11</text></g>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="50" x2="142" y1="253" y2="253"></line>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="258" x2="166" y1="253" y2="253"></line>
+<line class="rp-dir" marker-end="url(#rp-arrow)" x1="282" x2="374" y1="253" y2="253"></line>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="60" y="280">0</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="96" y="280">1</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="132" y="280">2</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="176" y="280">3</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="212" y="280">4</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="248" y="280">5</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="292" y="280">6</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="328" y="280">7</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="364" y="280">8</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="212" y="304">column</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" transform="rotate(-90 14 188.0)" x="14" y="188">row</text>
+<text class="rp-title" dominant-baseline="central" text-anchor="start" x="396" y="22">get_delta_read_times</text>
+<text class="rp-sub" dominant-baseline="central" text-anchor="start" x="396" y="46">time of each read after the first, (Nreads,)</text>
+<text class="rp-sub" dominant-baseline="central" text-anchor="start" x="396" y="66">same for every pixel: a read every 12 ticks</text>
+<rect class="rp-band" height="144" rx="6" width="57" x="490" y="116"></rect>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="518.5" y="134">read 1</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="575.5" y="134">read 2</text>
+<rect class="rp-band" height="144" rx="6" width="57" x="604" y="116"></rect>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="632.5" y="134">read 3</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="689.5" y="134">read 4</text>
+<g class="rp-row rp-s1" data-tick="0">
+<text class="rp-label" dominant-baseline="central" text-anchor="end" x="480" y="164">pixels #0</text>
+<line class="rp-track" x1="490" x2="661" y1="164" y2="164"></line>
+<circle class="rp-read" cx="490" cy="164" r="6"></circle>
+<circle class="rp-read" cx="547" cy="164" r="6"></circle>
+<circle class="rp-read" cx="604" cy="164" r="6"></circle>
+<circle class="rp-read" cx="661" cy="164" r="6"></circle>
+<rect class="rp-mid" height="11" transform="rotate(45 575.5 164)" width="11" x="570" y="158.5"></rect>
+</g>
+<g class="rp-row rp-s2" data-tick="4">
+<text class="rp-label" dominant-baseline="central" text-anchor="end" x="480" y="200">pixels #4</text>
+<line class="rp-track" x1="509" x2="680" y1="200" y2="200"></line>
+<circle class="rp-read" cx="509" cy="200" r="6"></circle>
+<circle class="rp-read" cx="566" cy="200" r="6"></circle>
+<circle class="rp-read" cx="623" cy="200" r="6"></circle>
+<circle class="rp-read" cx="680" cy="200" r="6"></circle>
+<rect class="rp-mid" height="11" transform="rotate(45 594.5 200)" width="11" x="589" y="194.5"></rect>
+</g>
+<g class="rp-row rp-s3" data-tick="11">
+<text class="rp-label" dominant-baseline="central" text-anchor="end" x="480" y="236">pixels #11</text>
+<line class="rp-track" x1="542.25" x2="713.25" y1="236" y2="236"></line>
+<circle class="rp-read" cx="542.25" cy="236" r="6"></circle>
+<circle class="rp-read" cx="599.25" cy="236" r="6"></circle>
+<circle class="rp-read" cx="656.25" cy="236" r="6"></circle>
+<circle class="rp-read" cx="713.25" cy="236" r="6"></circle>
+<rect class="rp-mid" height="11" transform="rotate(45 627.75 236)" width="11" x="622.25" y="230.5"></rect>
+</g>
+<line class="rp-baseline" x1="490" x2="718" y1="260" y2="260"></line>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="490" y="280">0</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="547" y="280">12</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="604" y="280">24</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="661" y="280">36</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="718" y="280">48</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="604" y="304">time (clock ticks)</text>
+<line class="rp-dir" marker-end="url(#rp-arrow)" marker-start="url(#rp-arrow)" x1="491" x2="546" y1="330" y2="330"></line>
+<text class="rp-sub" dominant-baseline="central" text-anchor="start" x="555" y="330">12 = 4 × 3 pixels / clock_rate</text>
+<text class="rp-title" dominant-baseline="central" text-anchor="start" x="778" y="22">signal vs. time</text>
+<text class="rp-sub" dominant-baseline="central" text-anchor="start" x="778" y="46">constant source: same slope,</text>
+<text class="rp-sub" dominant-baseline="central" text-anchor="start" x="778" y="66">lagged by each first read</text>
+<line class="rp-baseline" x1="806" x2="990" y1="260" y2="260"></line>
+<line class="rp-baseline" x1="806" x2="806" y1="116" y2="260"></line>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="806" y="280">0</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="852" y="280">12</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="898" y="280">24</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="944" y="280">36</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="990" y="280">48</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" x="898" y="304">time (clock ticks)</text>
+<text class="rp-axis" dominant-baseline="central" text-anchor="middle" transform="rotate(-90 794 188.0)" x="794" y="188">signal</text>
+<g class="rp-row rp-s1" data-tick="0">
+<line class="rp-track" x1="806" x2="944" y1="260" y2="138"></line>
+<circle class="rp-read" cx="806" cy="260" r="5"></circle>
+<circle class="rp-read" cx="852" cy="219.333" r="5"></circle>
+<circle class="rp-read" cx="898" cy="178.667" r="5"></circle>
+<circle class="rp-read" cx="944" cy="138" r="5"></circle>
+<rect class="rp-mid" height="9" transform="rotate(45 875 199)" width="9" x="870.5" y="194.5"></rect>
+</g>
+<g class="rp-row rp-s2" data-tick="4">
+<line class="rp-track" x1="821.333" x2="959.333" y1="260" y2="138"></line>
+<circle class="rp-read" cx="821.333" cy="260" r="5"></circle>
+<circle class="rp-read" cx="867.333" cy="219.333" r="5"></circle>
+<circle class="rp-read" cx="913.333" cy="178.667" r="5"></circle>
+<circle class="rp-read" cx="959.333" cy="138" r="5"></circle>
+<rect class="rp-mid" height="9" transform="rotate(45 890.333 199)" width="9" x="885.833" y="194.5"></rect>
+</g>
+<g class="rp-row rp-s3" data-tick="11">
+<line class="rp-track" x1="848.167" x2="986.167" y1="260" y2="138"></line>
+<circle class="rp-read" cx="848.167" cy="260" r="5"></circle>
+<circle class="rp-read" cx="894.167" cy="219.333" r="5"></circle>
+<circle class="rp-read" cx="940.167" cy="178.667" r="5"></circle>
+<circle class="rp-read" cx="986.167" cy="138" r="5"></circle>
+<rect class="rp-mid" height="9" transform="rotate(45 917.167 199)" width="9" x="912.667" y="194.5"></rect>
+</g>
+<line class="rp-dir" marker-end="url(#rp-arrow)" marker-start="url(#rp-arrow)" x1="945" x2="985.167" y1="126" y2="126"></line>
+<text class="rp-sub" dominant-baseline="central" text-anchor="end" x="986.167" y="110">11 tick lag</text>
+<text class="rp-hint" dominant-baseline="central" id="rp-info" text-anchor="start" x="8" y="356">Hover a colored pixel to see when it is read.</text>
+<circle class="rp-legend" cx="810" cy="356" r="6"></circle>
+<text class="rp-axis" dominant-baseline="central" text-anchor="start" x="822" y="356">read</text>
+<rect class="rp-legend rp-legend-mid" height="10" transform="rotate(45 884 356)" width="10" x="879" y="351"></rect>
+<text class="rp-axis" dominant-baseline="central" text-anchor="start" x="896" y="356">mid_time</text>
+</svg>
+</div>
+<script>
+(() => {
+  const root = document.currentScript.previousElementSibling;
+  const info = root.querySelector("#rp-info");
+  const hint = info.textContent;
+  const period = 12, Nreads = 4, mid = 18;
+  root.querySelectorAll(".rp-hover").forEach((cell) => {
+    cell.addEventListener("pointerenter", () => {
+      const t = Number(cell.dataset.tick);
+      root.querySelectorAll(`[data-tick="${t}"]`).forEach((el) => el.classList.add("rp-hl"));
+      root.classList.toggle("rp-focus", !!root.querySelector(`.rp-row[data-tick="${t}"]`));
+      const reads = Array.from({length: Nreads}, (_, k) => t + k * period).join(", ");
+      info.textContent = `Pixel (${cell.dataset.row}, ${cell.dataset.col}): reads at ticks ` +
+        `${reads}; mid_time at ${t + mid}. One pixel per channel shares these times.`;
+    });
+    cell.addEventListener("pointerleave", () => {
+      root.querySelectorAll(".rp-hl").forEach((el) => el.classList.remove("rp-hl"));
+      root.classList.remove("rp-focus");
+      info.textContent = hint;
+    });
+  });
+})();
+</script>
+<p>A 4 x 9 detector with 3 vertical channels read in parallel in alternating directions. For a constant source, pixels read later have the same ramp, shifted in time.</p>
+</section>
+<section id="ordinary-least-squares">
+<h2>Ordinary least squares<a class="headerlink" href="#ordinary-least-squares" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#ordinary-least-squares'"><svg height="1em" viewbox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path></svg></a></h2>
+<p><a class="reference internal" href="../api/generated/oircal.ramp_fitting.fit_ramp_numba.html#oircal.ramp_fitting.fit_ramp_numba.fit_ramps_ols" title="oircal.ramp_fitting.fit_ramp_numba.fit_ramps_ols"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit_ramps_ols()</span></code></a> fits a line with a free intercept to each ramp segment. The output also has <code class="docutils literal notranslate"><span class="pre">bias</span></code> and <code class="docutils literal notranslate"><span class="pre">bias_err</span></code>, the fitted intercept.</p>
+<p>A ramp is split into segments at reads flagged <code class="docutils literal notranslate"><span class="pre">JUMP_DET</span></code>, and reads flagged <code class="docutils literal notranslate"><span class="pre">DO_NOT_USE</span></code> or <code class="docutils literal notranslate"><span class="pre">SATURATED</span></code> are left out. For a segment of <span class="math notranslate nohighlight">\(n\)</span> reads with times <span class="math notranslate nohighlight">\(t_i\)</span> and signals <span class="math notranslate nohighlight">\(S_i\)</span> (DN), the rate <span class="math notranslate nohighlight">\(r\)</span> and intercept <span class="math notranslate nohighlight">\(b\)</span> are</p>
+<div class="math notranslate nohighlight">
+\[r = \frac{n \sum t_i S_i - \sum t_i \sum S_i}{\Delta}, \qquad
+b = \frac{\sum t_i^2 \sum S_i - \sum t_i \sum t_i S_i}{\Delta},\]</div>
+<div class="math notranslate nohighlight">
+\[\Delta = n \sum t_i^2 - \Big(\sum t_i\Big)^2,\]</div>
+<p>with read noise and Poisson variances</p>
+<div class="math notranslate nohighlight">
+\[\sigma_{r,\mathrm{read}}^2 = \frac{n \, \sigma_\mathrm{read}^2}{\Delta}, \qquad
+\sigma_{r,\mathrm{Poisson}}^2 = \frac{|r + D|}{g \, (t_n - t_1)},\]</div>
+<p>where <span class="math notranslate nohighlight">\(\sigma_\mathrm{read}\)</span> is the single-read read noise (<code class="docutils literal notranslate"><span class="pre">rdnoise</span></code>, DN), <span class="math notranslate nohighlight">\(g\)</span> the gain (<code class="docutils literal notranslate"><span class="pre">gain</span></code>, e-/DN) and <span class="math notranslate nohighlight">\(D\)</span> the dark current (<code class="docutils literal notranslate"><span class="pre">dark_current</span></code>, DN/s). <code class="docutils literal notranslate"><span class="pre">bias</span></code> comes from the segment that starts at the first read, and <code class="docutils literal notranslate"><span class="pre">bias_err</span></code> is <span class="math notranslate nohighlight">\(\sigma_b = \sigma_\mathrm{read} \sqrt{\sum t_i^2 / \Delta}\)</span>.</p>
+<p>The segments are combined by inverse-variance weighting, with <span class="math notranslate nohighlight">\(\sigma_{r,k}^2 = \sigma_{r,\mathrm{read},k}^2 + \sigma_{r,\mathrm{Poisson},k}^2\)</span> for segment <span class="math notranslate nohighlight">\(k\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[r = \frac{\sum_k r_k / \sigma_{r,k}^2}{\sum_k 1 / \sigma_{r,k}^2}, \qquad
+\sigma_r^2 = \frac{1}{\sum_k 1 / \sigma_{r,k}^2}.\]</div>
+<p><code class="docutils literal notranslate"><span class="pre">rate_err</span></code> is <span class="math notranslate nohighlight">\(\sigma_r\)</span>, and <code class="docutils literal notranslate"><span class="pre">rate_var_rnoise</span></code> and <code class="docutils literal notranslate"><span class="pre">rate_var_poisson</span></code> combine <span class="math notranslate nohighlight">\(\sigma_{r,\mathrm{read},k}^2\)</span> and <span class="math notranslate nohighlight">\(\sigma_{r,\mathrm{Poisson},k}^2\)</span> the same way.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">from</span><span class="w"> </span><span class="nn">oircal.ramp_fitting</span><span class="w"> </span><span class="kn">import</span> <span class="n">fit_ramps_ols</span>
+</span><span id="line-2">
+</span><span id="line-3"><span class="n">result</span> <span class="o">=</span> <span class="n">fit_ramps_ols</span><span class="p">(</span>
+</span><span id="line-4">    <span class="n">times</span><span class="o">=</span><span class="n">times</span><span class="p">,</span>
+</span><span id="line-5">    <span class="n">input_data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span id="line-6">    <span class="n">input_dq_raw</span><span class="o">=</span><span class="n">dq_raw</span><span class="p">,</span>
+</span><span id="line-7">    <span class="n">input_dq</span><span class="o">=</span><span class="n">dq</span><span class="p">,</span>
+</span><span id="line-8">    <span class="n">dq_flags</span><span class="o">=</span><span class="n">dq_flags</span><span class="p">,</span>
+</span><span id="line-9">    <span class="n">rdnoise</span><span class="o">=</span><span class="n">read_noise</span><span class="p">,</span>
+</span><span id="line-10">    <span class="n">gain</span><span class="o">=</span><span class="n">gain</span><span class="p">,</span>
+</span><span id="line-11">    <span class="n">start_times</span><span class="o">=</span><span class="n">start_times</span><span class="p">,</span>
+</span><span id="line-12"><span class="p">)</span>
+</span><span id="line-13"><span class="n">rate</span><span class="p">,</span> <span class="n">rate_err</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"rate"</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="s2">"rate_err"</span><span class="p">]</span>
+</span><span id="line-14"><span class="n">mid_time</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"mid_time"</span><span class="p">]</span>  <span class="c1"># MJD</span>
+</span></code></pre></div>
+</div>
+</section>
+<section id="multiple-correlated-double-sampling">
+<h2>Multiple correlated double sampling<a class="headerlink" href="#multiple-correlated-double-sampling" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#multiple-correlated-double-sampling'"><svg height="1em" viewbox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path></svg></a></h2>
+<p><a class="reference internal" href="../api/generated/oircal.ramp_fitting.fit_ramp_numba.html#oircal.ramp_fitting.fit_ramp_numba.fit_ramps_mcds" title="oircal.ramp_fitting.fit_ramp_numba.fit_ramps_mcds"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit_ramps_mcds()</span></code></a> computes the rate from the difference between the start and end of each ramp segment, averaging <code class="docutils literal notranslate"><span class="pre">num_coadd</span></code> reads at each end. It takes the same arguments as <a class="reference internal" href="../api/generated/oircal.ramp_fitting.fit_ramp_numba.html#oircal.ramp_fitting.fit_ramp_numba.fit_ramps_ols" title="oircal.ramp_fitting.fit_ramp_numba.fit_ramps_ols"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit_ramps_ols()</span></code></a>, plus <code class="docutils literal notranslate"><span class="pre">num_coadd</span></code>.</p>
+<p>Set <code class="docutils literal notranslate"><span class="pre">num_coadd=1</span></code> to use CDS.</p>
+<p>With <span class="math notranslate nohighlight">\(m\)</span> = <code class="docutils literal notranslate"><span class="pre">num_coadd</span></code>, let <span class="math notranslate nohighlight">\(\bar S_1, \bar t_1\)</span> and <span class="math notranslate nohighlight">\(\bar S_2, \bar t_2\)</span> be the mean signal and time of the first and last <span class="math notranslate nohighlight">\(m\)</span> reads of a segment. Then</p>
+<div class="math notranslate nohighlight">
+\[r = \frac{\bar S_2 - \bar S_1}{\bar t_2 - \bar t_1}, \qquad
+\sigma_{r,\mathrm{read}}^2 = \frac{2 \, \sigma_\mathrm{read}^2}{m \, (\bar t_2 - \bar t_1)^2}, \qquad
+\sigma_{r,\mathrm{Poisson}}^2 = \frac{|r + D|}{g \, (\bar t_2 - \bar t_1)},\]</div>
+<p>and the segments are combined as for <a class="reference internal" href="../api/generated/oircal.ramp_fitting.fit_ramp_numba.html#oircal.ramp_fitting.fit_ramp_numba.fit_ramps_ols" title="oircal.ramp_fitting.fit_ramp_numba.fit_ramps_ols"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit_ramps_ols()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">from</span><span class="w"> </span><span class="nn">oircal.ramp_fitting</span><span class="w"> </span><span class="kn">import</span> <span class="n">fit_ramps_mcds</span>
+</span><span id="line-2">
+</span><span id="line-3"><span class="n">result</span> <span class="o">=</span> <span class="n">fit_ramps_mcds</span><span class="p">(</span>
+</span><span id="line-4">    <span class="n">times</span><span class="o">=</span><span class="n">times</span><span class="p">,</span>
+</span><span id="line-5">    <span class="n">input_data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span id="line-6">    <span class="n">input_dq_raw</span><span class="o">=</span><span class="n">dq_raw</span><span class="p">,</span>
+</span><span id="line-7">    <span class="n">input_dq</span><span class="o">=</span><span class="n">dq</span><span class="p">,</span>
+</span><span id="line-8">    <span class="n">dq_flags</span><span class="o">=</span><span class="n">dq_flags</span><span class="p">,</span>
+</span><span id="line-9">    <span class="n">rdnoise</span><span class="o">=</span><span class="n">read_noise</span><span class="p">,</span>
+</span><span id="line-10">    <span class="n">gain</span><span class="o">=</span><span class="n">gain</span><span class="p">,</span>
+</span><span id="line-11"><span class="p">)</span>
+</span></code></pre></div>
+</div>
+</section>
+<section id="maximum-likelihood">
+<h2>Maximum Likelihood<a class="headerlink" href="#maximum-likelihood" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#maximum-likelihood'"><svg height="1em" viewbox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path></svg></a></h2>
+<p><a class="reference internal" href="../api/generated/oircal.ramp_fitting.fit_ramp_jwst.html#oircal.ramp_fitting.fit_ramp_jwst.fit_ramps_jwst" title="oircal.ramp_fitting.fit_ramp_jwst.fit_ramps_jwst"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit_ramps_jwst()</span></code></a> wraps the JWST ramp fitting algorithms:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">"CYTHON_LIKELY"</span></code> (default): the same algorithm as <code class="docutils literal notranslate"><span class="pre">"JWST_LIKELY"</span></code> implemented in Cython.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">"JWST_LIKELY"</span></code>: likelihood-based fitting (<a class="reference external" href="https://arxiv.org/abs/2309.08753">Brandt 2024</a>) from <a class="reference external" href="https://github.com/spacetelescope/stcal">stcal</a>. Needs at least 4 reads.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">"JWST_FIXSEN"</span></code>: quasi-likelihood-based fitting (<a class="reference external" href="https://arxiv.org/abs/astro-ph/0005486">Fixsen et al. 2000</a>).</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">from</span><span class="w"> </span><span class="nn">oircal.ramp_fitting</span><span class="w"> </span><span class="kn">import</span> <span class="n">fit_ramps_jwst</span>
+</span><span id="line-2">
+</span><span id="line-3"><span class="n">result</span> <span class="o">=</span> <span class="n">fit_ramps_jwst</span><span class="p">(</span>
+</span><span id="line-4">    <span class="n">times</span><span class="o">=</span><span class="n">times</span><span class="p">,</span>
+</span><span id="line-5">    <span class="n">input_data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+</span><span id="line-6">    <span class="n">dq_flags</span><span class="o">=</span><span class="n">dq_flags</span><span class="p">,</span>
+</span><span id="line-7">    <span class="n">input_dq_raw</span><span class="o">=</span><span class="n">dq_raw</span><span class="p">,</span>
+</span><span id="line-8">    <span class="n">input_dq</span><span class="o">=</span><span class="n">dq</span><span class="p">,</span>
+</span><span id="line-9">    <span class="n">rdnoise</span><span class="o">=</span><span class="n">read_noise</span><span class="p">,</span>
+</span><span id="line-10">    <span class="n">gain</span><span class="o">=</span><span class="n">gain</span><span class="p">,</span>
+</span><span id="line-11">    <span class="n">algorithm</span><span class="o">=</span><span class="s2">"CYTHON_LIKELY"</span><span class="p">,</span>
+</span><span id="line-12"><span class="p">)</span>
+</span></code></pre></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">jump_detection=True</span></code>, <a class="reference internal" href="../api/generated/oircal.ramp_fitting.fit_ramp_jwst.html#oircal.ramp_fitting.fit_ramp_jwst.fit_ramps_jwst" title="oircal.ramp_fitting.fit_ramp_jwst.fit_ramps_jwst"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit_ramps_jwst()</span></code></a> also runs <a class="reference internal" href="../api/generated/oircal.jump_detection.jump_detection_jwst.html#oircal.jump_detection.jump_detection_jwst" title="oircal.jump_detection.jump_detection_jwst"><code class="xref py py-func docutils literal notranslate"><span class="pre">jump_detection_jwst()</span></code></a> on the ramps.</p>
+</section>
+</section>
+</div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
+<div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
+<ul>
+<li><a :data-current="activeSection === '#read-times'" class="reference internal" href="#read-times">Read times</a></li>
+<li><a :data-current="activeSection === '#ordinary-least-squares'" class="reference internal" href="#ordinary-least-squares">Ordinary least squares</a></li>
+<li><a :data-current="activeSection === '#multiple-correlated-double-sampling'" class="reference internal" href="#multiple-correlated-double-sampling">Multiple correlated double sampling</a></li>
+<li><a :data-current="activeSection === '#maximum-likelihood'" class="reference internal" href="#maximum-likelihood">Maximum Likelihood</a></li>
+</ul>
+</div>
+</aside>
+</main>
+</div>
+</div><footer class="py-6 border-t border-border md:py-0">
+<div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+<div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
+<p class="text-sm leading-loose text-center text-muted-foreground md:text-left">© 2026, UCSD Optical-Infrared Laboratory Built with <a class="font-medium underline underline-offset-4" href="https://www.sphinx-doc.org" rel="noreferrer">Sphinx 9.1.0</a></p>
+</div>
+</div>
+</footer>
+</div>
+<script src="../_static/documentation_options.js?v=5929fcd5"></script>
+<script src="../_static/doctools.js?v=fd6eb6e6"></script>
+<script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+<script defer="defer" src="../_static/theme.js?v=582b20c5"></script>
+<script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+</body>
+</html>

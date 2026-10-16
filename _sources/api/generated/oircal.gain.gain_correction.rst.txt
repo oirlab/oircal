@@ -1,0 +1,13 @@
+oircal.gain.gain\_correction
+============================
+
+.. automodule:: oircal.gain.gain_correction
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _correct_gain_numba
+      correct_gain
+   

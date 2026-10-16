@@ -1,0 +1,19 @@
+oircal.simulations.utr
+======================
+
+.. automodule:: oircal.simulations.utr
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _create_ramp
+      _create_ramp_worker
+      _poisson_like_draw
+      _tpool_init
+      create_ramp
+      generate_1overf_noise
+      generate_1overf_noise_map
+      utr_variable_rate_cube
+   

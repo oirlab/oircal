@@ -1,0 +1,17 @@
+oircal.ramp\_fitting.fit\_ramp\_numba
+=====================================
+
+.. automodule:: oircal.ramp_fitting.fit_ramp_numba
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _fit_ramp_mcds
+      _fit_ramp_slope_pedestal
+      _fit_ramps_mcds
+      _fit_ramps_slope_pedestal
+      fit_ramps_mcds
+      fit_ramps_ols
+   

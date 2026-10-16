@@ -1,0 +1,15 @@
+oircal.utils.stats
+==================
+
+.. automodule:: oircal.utils.stats
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      biweight_location
+      biweight_midvariance
+      get_err_from_posterior
+      mad
+   

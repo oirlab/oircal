@@ -1,0 +1,6 @@
+oircal.coadd.combine
+====================
+
+.. currentmodule:: oircal.coadd
+
+.. autofunction:: combine

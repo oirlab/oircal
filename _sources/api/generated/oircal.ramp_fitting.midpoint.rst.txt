@@ -1,0 +1,14 @@
+oircal.ramp\_fitting.midpoint
+=============================
+
+.. automodule:: oircal.ramp_fitting.midpoint
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      calculate_midpoint_time_delta
+      calculate_midpoint_time_deltas
+      get_ramp_chunks
+   

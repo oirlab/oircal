@@ -1,0 +1,6 @@
+oircal.dark\_subtraction.make\_dark
+===================================
+
+.. currentmodule:: oircal.dark_subtraction
+
+.. autofunction:: make_dark

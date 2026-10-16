@@ -1,0 +1,6 @@
+oircal.coadd.coadd
+==================
+
+.. currentmodule:: oircal.coadd
+
+.. autofunction:: coadd

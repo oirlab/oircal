@@ -1,0 +1,6 @@
+oircal.saturation.make\_saturation
+==================================
+
+.. currentmodule:: oircal.saturation
+
+.. autofunction:: make_saturation

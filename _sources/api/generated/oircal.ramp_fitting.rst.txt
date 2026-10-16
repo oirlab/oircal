@@ -1,0 +1,19 @@
+﻿oircal.ramp\_fitting
+====================
+
+.. automodule:: oircal.ramp_fitting
+   :no-members:
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fit_ramp_jwst
+   fit_ramp_numba
+   fitramp_Brandt
+   fitramp_cython_Brandt
+   midpoint
+   utils

@@ -1,0 +1,15 @@
+﻿oircal.detector\_flat
+=====================
+
+.. automodule:: oircal.detector_flat
+   :no-members:
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   detector_flat
+   make_detector_flat

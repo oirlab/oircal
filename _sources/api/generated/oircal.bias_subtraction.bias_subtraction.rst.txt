@@ -1,0 +1,13 @@
+oircal.bias\_subtraction.bias\_subtraction
+==========================================
+
+.. automodule:: oircal.bias_subtraction.bias_subtraction
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _subtract_bias_numba
+      subtract_bias
+   
