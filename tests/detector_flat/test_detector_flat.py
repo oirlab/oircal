@@ -92,3 +92,26 @@ def test_correct_detector_flat_nonpositive_flat():
     np.testing.assert_allclose(rate_out[0, 0], rate[0, 0] / flat[0, 0])
     np.testing.assert_allclose(rate_out[1, 1], rate[1, 1] / flat[1, 1])
     np.testing.assert_array_equal(dq_out, flat_dq)
+
+
+def test_correct_detector_flat_variances():
+    rate, err, dq, flat, flat_err, flat_dq = _make_inputs()
+    flat[0, 1] = 0.0  # not positive: left uncorrected
+    var_poisson = np.array([[4.0, 9.0], [16.0, 25.0]], dtype=np.float32)
+    var_rnoise = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
+    vp, vr, e = var_poisson.copy(), var_rnoise.copy(), err.copy()
+    correct_detector_flat(
+        rate.copy(),
+        flat,
+        input_err=e,
+        input_var_poisson=vp,
+        input_var_rnoise=vr,
+    )
+
+    safe_flat = np.where(flat > 0, flat, 1.0)
+    expected_scale = 1 / safe_flat**2
+    np.testing.assert_allclose(vp, var_poisson * expected_scale)
+    np.testing.assert_allclose(vr, var_rnoise * expected_scale)
+    # With a noiseless flat, the variances still sum to err**2 if they did before
+    np.testing.assert_allclose(vp + vr, (var_poisson + var_rnoise) * expected_scale)
+    np.testing.assert_allclose(e, err / safe_flat)
