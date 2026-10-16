@@ -14,17 +14,21 @@ def correct_detector_flat(
     input_dq: np.ndarray | None = None,
     detflat_err: np.ndarray | None = None,
     detflat_dq: np.ndarray | None = None,
+    input_var_poisson: np.ndarray | None = None,
+    input_var_rnoise: np.ndarray | None = None,
     max_cores: int = 1,
 ) -> tuple[np.ndarray, np.ndarray | None, np.ndarray | None]:
     """
     Apply the detector-level flat field correction, in place.
 
-    `input_data` (and `input_err`) are divided by the flat. Both must be floating point, since
-    the results are written back into them. Pixels where the flat is not positive (or is NaN)
-    are left uncorrected. If `input_err` is given, it is propagated through the division; the
-    flat contributes to the error only if `detflat_err` is also given, otherwise the flat is
-    treated as noiseless. DQ propagation (bitwise OR) runs only if both `input_dq` and
-    `detflat_dq` are given.
+    `input_data` (and `input_err`) are divided by the flat, and the variances
+    `input_var_poisson` and `input_var_rnoise` by the flat squared. All must be floating point,
+    since the results are written back into them. Pixels where the flat is not positive (or is
+    NaN) are left uncorrected. If `input_err` is given, it is propagated through the division;
+    the flat contributes to the error only if `detflat_err` is also given, otherwise the flat
+    is treated as noiseless. `detflat_err` does not enter the variances, so with it the
+    variances no longer sum to ``input_err**2``. DQ propagation (bitwise OR) runs only if both
+    `input_dq` and `detflat_dq` are given.
 
     Parameters
     ----------
@@ -41,6 +45,12 @@ def correct_detector_flat(
         2D array of shape (Nrows, Ncols) of flat field uncertainties (unitless). Default is None.
     detflat_dq
         2D array of shape (Nrows, Ncols) of DQ flags from the flat calibration. Default is None.
+    input_var_poisson
+        2D array of shape (Nrows, Ncols) of the Poisson variance of the rates ((DN/s)^2).
+        Modified in place. Default is None.
+    input_var_rnoise
+        2D array of shape (Nrows, Ncols) of the read noise variance of the rates ((DN/s)^2).
+        Modified in place. Default is None.
     max_cores
         Maximum number of CPU cores to use. Default is 1.
 
@@ -48,14 +58,20 @@ def correct_detector_flat(
     -------
     input_data, input_err, input_dq
         The (in-place modified) input arrays; `input_err` and `input_dq`
-        are returned as passed, including None.
+        are returned as passed, including None. `input_var_poisson` and `input_var_rnoise`
+        are modified in place but not returned.
     """
     assert not np.issubdtype(input_data.dtype, np.integer), (
         f"Rates must be floating point, got {input_data.dtype}"
     )
-    assert input_err is None or not np.issubdtype(input_err.dtype, np.integer), (
-        f"Rate errors must be floating point, got {input_err.dtype}"
-    )
+    for name, arr in (
+        ("Rate errors", input_err),
+        ("Poisson variances", input_var_poisson),
+        ("Read noise variances", input_var_rnoise),
+    ):
+        assert arr is None or not np.issubdtype(arr.dtype, np.integer), (
+            f"{name} must be floating point, got {arr.dtype}"
+        )
     with numba_thread_scope(max_cores):
         _correct_detector_flat_numba(
             input_data,
@@ -64,6 +80,8 @@ def correct_detector_flat(
             detflat_err,
             input_dq,
             detflat_dq,
+            input_var_poisson,
+            input_var_rnoise,
         )
     return input_data, input_err, input_dq
 
@@ -76,6 +94,8 @@ def _correct_detector_flat_numba(
     flat_err,
     input_dq,
     flat_dq,
+    input_var_poisson,
+    input_var_rnoise,
 ):
     Nrows, Ncols = input_rate.shape
     for j in prange(Nrows):
@@ -93,6 +113,11 @@ def _correct_detector_flat_numba(
                     )
                 elif input_err is not None:
                     input_err[j, i] /= f
+
+                if input_var_poisson is not None:
+                    input_var_poisson[j, i] /= f * f
+                if input_var_rnoise is not None:
+                    input_var_rnoise[j, i] /= f * f
 
             if input_dq is not None and flat_dq is not None:
                 input_dq[j, i] |= flat_dq[j, i]

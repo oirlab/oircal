@@ -1,3 +1,5 @@
+from typing import Literal
+
 import numpy as np
 
 
@@ -5,6 +7,14 @@ __all__ = [
     "get_delta_read_times",
     "get_first_read_mjd",
 ]
+
+# Whether each channel is read in reverse, repeating across channels
+_REVERSED_CHANNELS = {
+    "forward": (False,),
+    "reverse": (True,),
+    "forward_reverse": (False, True),
+    "reverse_forward": (True, False),
+}
 
 
 def _channel_shape(Nrows: int, Ncols: int, Nchannels: int, vertical: bool) -> tuple[int, int]:
@@ -84,6 +94,12 @@ def get_first_read_mjd(
     clock_rate: float,
     Nchannels: int = 1,
     vertical: bool = True,
+    readout_direction: Literal[
+        "forward",
+        "reverse",
+        "forward_reverse",
+        "reverse_forward",
+    ] = "forward_reverse",
 ) -> np.ndarray:
     """
     Get the MJD time of the first read of each pixel.
@@ -112,6 +128,14 @@ def get_first_read_mjd(
         If True, the channels are vertical (each spans all rows); if False, they are
         horizontal (each spans all columns). Within each channel, pixels are read row by row
         for vertical channels, meaning channels are read in the width direction.
+    readout_direction
+        Direction each channel is read along its width. Forward is toward increasing column
+        for vertical channels and increasing row for horizontal channels.
+
+        - ``"forward"``: every channel forward.
+        - ``"reverse"``: every channel in reverse.
+        - ``"forward_reverse"``: the first channel forward, the second in reverse, and so on.
+        - ``"reverse_forward"``: the first channel in reverse, the second forward, and so on.
 
     Returns
     -------
@@ -122,8 +146,14 @@ def get_first_read_mjd(
     Raises
     ------
     ValueError
-        If the detector width along the channel direction is not divisible by `Nchannels`.
+        If the detector width along the channel direction is not divisible by `Nchannels`, or
+        `readout_direction` is not one of the options above.
     """
+    if readout_direction not in _REVERSED_CHANNELS:
+        raise ValueError(
+            f"readout_direction must be one of {list(_REVERSED_CHANNELS)}, "
+            f"got {readout_direction!r}.",
+        )
     Nrows_chan, Ncols_chan = _channel_shape(Nrows, Ncols, Nchannels, vertical)
 
     first_read_mjd_channel = (
@@ -133,9 +163,12 @@ def get_first_read_mjd(
         / 86400.0
     )
 
-    # TODO: Are adjacent channels flipped in the direction of readout?
-    # TODO:   (i.e. channel 1 reads left to right, channel 2 reads right to left, etc.)
     first_read_mjd = np.tile(first_read_mjd_channel, (1, Nchannels))
+    reversed_channels = _REVERSED_CHANNELS[readout_direction]
+    flipped = first_read_mjd_channel[:, ::-1]
+    for k in range(Nchannels):
+        if reversed_channels[k % len(reversed_channels)]:
+            first_read_mjd[:, k * Ncols_chan : (k + 1) * Ncols_chan] = flipped
 
     if vertical:
         return first_read_mjd

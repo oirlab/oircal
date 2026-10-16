@@ -2,6 +2,8 @@
 # Author: Athira Unni
 # Primitive copied from https://github.com/scalessim/SCALES-DRP/blob/main/scalesdrp/primitives/reference.py on 2026-01-03
 
+# Copied into oircal on October 2026 by Bryson Cale.
+
 # import pandas as pd
 from collections.abc import Callable
 from typing import Any
