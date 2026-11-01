@@ -30,16 +30,16 @@ T_MAX = Nreads * period
 examples = [0, 4, 11]
 
 # ---- Layout (SVG user units; the docs column renders about 0.7 px per unit) ----
-W, H = 1000, 368
-TITLE_Y, SUB_Y = 22, 46  # title, first line of the description (second line 20 below)
-PLOT_Y0, PLOT_Y1 = 116, 260  # top and bottom of the grid and plots
+W, H = 1000, 388
+TITLE_Y, SUB_Y = 22, 46  # title, first line of the description (next lines 20 apart)
+PLOT_Y0, PLOT_Y1 = 136, 280  # top and bottom of the grid and plots, below 4 description lines
 TICK_Y, AXIS_Y = PLOT_Y1 + 20, PLOT_Y1 + 44  # tick labels, axis titles
 CELL, GAP = 36, 8  # pixel cell size, gap between channels
 LEFT_X = 8  # left edge of the titles
 GX = 42  # left of the pixel grid
 P2_X, PX0, PX1 = 396, 490, 718  # reads panel: title, time axis
 P3_X, SX0, SX1 = 778, 806, 990  # signal panel: title, time axis
-ROW_Y = [164, 200, 236]  # rows of the reads panel
+ROW_Y = [PLOT_Y0 + 48, PLOT_Y0 + 84, PLOT_Y0 + 120]  # rows of the reads panel
 
 
 def cell_x(c: int) -> float:
@@ -155,7 +155,8 @@ add(text(P2_X, TITLE_Y, "get_delta_read_times", "rp-title"))
 description(
     P2_X,
     [
-        "Computes the time of each read (in seconds) relative to the first read.",
+        "Computes the time of each read (in seconds)",
+        "relative to the first read.",
         "Returns an array of shape (Nreads,)",
         "The array is the same for every pixel.",
     ],
