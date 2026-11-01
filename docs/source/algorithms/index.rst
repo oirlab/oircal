@@ -76,6 +76,7 @@ Each page below shows one algorithm on its own. The examples on these pages cont
    jump_detection
    ramp_fitting
    gain
+   read_noise
    dark_subtraction
    detector_flat
    coadd

@@ -15,6 +15,7 @@ API Reference
    jump_detection
    nonlinear_correction
    ramp_fitting
+   read_noise
    refpix
    saturation
    simulations
