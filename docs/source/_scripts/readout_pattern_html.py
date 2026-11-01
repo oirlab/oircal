@@ -99,7 +99,11 @@ add = svg.append
 add(text(LEFT_X, TITLE_Y, "get_first_read_mjd", "rp-title"))
 description(
     LEFT_X,
-    ["MJD of each pixel's first read, (Nrows, Ncols)", "here in clock ticks after mjd_start"],
+    [
+        "Computes the time of each pixel's first read in MJD.",
+        "Returns an array of shape (Nrows, Ncols)",
+        "here in clock ticks after mjd_start",
+    ],
 )
 
 for k in range(Nchannels):
@@ -151,8 +155,9 @@ add(text(P2_X, TITLE_Y, "get_delta_read_times", "rp-title"))
 description(
     P2_X,
     [
-        "time of each read after the first, (Nreads,)",
-        f"same for every pixel: a read every {period} ticks",
+        "Computes the time of each read (in seconds) relative to the first read.",
+        "Returns an array of shape (Nreads,)",
+        "The array is the same for every pixel.",
     ],
 )
 
