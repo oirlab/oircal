@@ -46,8 +46,7 @@ def test_rates_and_flags(dq_flags):
     dq_raw[jumps] |= dq_flags["JUMP_DET"]
     data += np.cumsum(jumps * rng.normal(0.0, 500.0, data.shape), axis=1)
     data[dq_raw & dq_flags["DO_NOT_USE"] > 0] = 1e6
-    #gain = calc_gain(data, RN, dq_raw, dq_flags, mode="full_detector")
-    gain, gain_err = calc_gain(data, RN, dq_raw, dq_flags, mode="per_pixel")
+    gain, gain_err = calc_gain(data, RN, dq_raw, dq_flags, mode="full_detector")
     assert abs(gain / GAIN - 1) < 0.02
 
     # A pixel with no run of 2 usable differences is NaN
