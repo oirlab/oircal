@@ -45,7 +45,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov"]
-dev = ["ruff==0.16.10"]
+dev = ["ruff==0.16.10", "pre-commit"]
 docs = ["sphinx>=9.1.0", "nbsphinx", "sphinx-astropy", "pandoc", "sphinx-multiversion", "sphinxawesome-theme==6.0.0", "sphinxcontrib-katex"]
 
 [project.urls]

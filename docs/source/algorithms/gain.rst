@@ -69,3 +69,32 @@ In DN, the variance of a read difference is the signal in that difference divide
 ``gain_map`` and ``rn_map`` have shape ``(Nrows, Ncols)`` and ``cov`` has shape ``(2, 2, Nrows, Ncols)``. With ``method="grid"``, the diagonal of ``cov`` holds the errors rather than the variances.
 
 To fit only the read noise, e.g. from dark exposures, hold the gain at a known value with ``fit_gain=False`` (with ``"quad"`` or ``"both"``); ``fit_rn=False`` fits only the gain. The fixed parameter's entries in ``cov`` are NaN. ``mode="full_detector"`` fits one gain and read noise to all pixels at once.
+
+Photon Transfer Gain
+--------------------
+
+:func:`.calc_gain` calculates the gain of each pixel from the mean and variance of the differences between consecutive reads of illuminated ramps, holding the read noise at a known value :param:`calc_gain.rn` (e.g. from :func:`.calc_readnoise`). The reads must be evenly spaced. Let :math:`\mu` be the mean signal per read interval (DN) and :math:`\sigma_\mathrm{read}` the single-read read noise (DN). A read difference has variance :math:`\mu / g + 2 \sigma_\mathrm{read}^2`.
+
+The differences of each ramp are split into runs of consecutive usable differences, ended by a read flagged ``DO_NOT_USE`` or ``SATURATED``, a non-finite read, or a read flagged ``JUMP_DET``. For a run of :math:`n \ge 2` differences :math:`d_k` with mean :math:`\bar d`,
+
+.. math::
+
+    A = \sum_k (d_k - \bar d)^2 - 2 \sigma_\mathrm{read}^2 \left(n - \frac{1}{n}\right), \qquad B = (n - 1) \, \bar d,
+
+with expected values :math:`(n - 1) \mu / g` and :math:`(n - 1) \mu`. The read noise term has :math:`n - 1/n` rather than :math:`n - 1` because neighboring differences share a read. The gain is :math:`g = \sum B / \sum A` over all runs of all ramps of the pixel, so the ramps may have different count rates.
+
+With ``mode="full_detector"``, the inverse gains :math:`\sum A / \sum B` of all pixels are combined with :func:`.combine`: sigma clipped at :param:`calc_gain.n_sigma` (5 by default), then averaged, with the error from the scatter of the kept pixels. The gain is the inverse of that mean. The inverse gain is averaged rather than the gain because it is nearly linear in the noisy :math:`A`, so its mean is not biased by the noise of each pixel's gain.
+
+The error of the gain comes from the scatter of the runs about the gain, as for a ratio estimator. With :math:`N` runs,
+
+.. math::
+
+    \sigma_g^2 = \frac{N}{N - 1} \, \frac{\sum (B - g A)^2}{\left(\sum A\right)^2}.
+
+It is reliable only with many runs, e.g. 10 or more ramps.
+
+.. code-block:: python
+
+    from oircal.gain import calc_gain
+
+    gain_map, gain_err = calc_gain(input_data=illum, rn=5.0)  # (Nrows, Ncols), e-/DN

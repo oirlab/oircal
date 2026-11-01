@@ -1,0 +1,10 @@
+# Git hooks, run by pre-commit. Set up once per clone with `pre-commit install`.
+# Keep the ruff rev the same as the ruff pin in the dev extra of pyproject.toml (used by CI).
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.10
+    hooks:
+      # Lint fixes first (e.g. COM812 trailing commas), then format
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format

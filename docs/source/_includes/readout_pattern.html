@@ -49,8 +49,9 @@ html.dark .readout-diagram { --rp-s1: #3987e5; --rp-s2: #d95926; --rp-s3: #199e7
 <desc id="rp-desc">Readout of a 4 by 9 pixel detector with 3 vertical channels. Each channel reads one pixel per clock tick, row by row, with every other channel reading right to left. Every read of a pixel follows its first read by a multiple of 12 ticks, so the ramps of pixels read at different ticks lag each other.</desc>
 <defs><marker id="rp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
 <text class="rp-title" x="8" y="22" text-anchor="start" dominant-baseline="central">get_first_read_mjd</text>
-<text class="rp-sub" x="8" y="46" text-anchor="start" dominant-baseline="central">MJD of each pixel's first read, (Nrows, Ncols)</text>
-<text class="rp-sub" x="8" y="66" text-anchor="start" dominant-baseline="central">here in clock ticks after mjd_start</text>
+<text class="rp-sub" x="8" y="46" text-anchor="start" dominant-baseline="central">Computes the time of each pixel's first read in MJD.</text>
+<text class="rp-sub" x="8" y="66" text-anchor="start" dominant-baseline="central">Returns an array of shape (Nrows, Ncols)</text>
+<text class="rp-sub" x="8" y="86" text-anchor="start" dominant-baseline="central">here in clock ticks after mjd_start</text>
 <text class="rp-label" x="96" y="100" text-anchor="middle" dominant-baseline="central">channel 1 →</text>
 <text class="rp-label" x="212" y="100" text-anchor="middle" dominant-baseline="central">channel 2 ←</text>
 <text class="rp-label" x="328" y="100" text-anchor="middle" dominant-baseline="central">channel 3 →</text>
@@ -118,8 +119,9 @@ html.dark .readout-diagram { --rp-s1: #3987e5; --rp-s2: #d95926; --rp-s3: #199e7
 <text class="rp-axis" x="212" y="304" text-anchor="middle" dominant-baseline="central">column</text>
 <text class="rp-axis" x="14" y="188" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 14 188.0)">row</text>
 <text class="rp-title" x="396" y="22" text-anchor="start" dominant-baseline="central">get_delta_read_times</text>
-<text class="rp-sub" x="396" y="46" text-anchor="start" dominant-baseline="central">time of each read after the first, (Nreads,)</text>
-<text class="rp-sub" x="396" y="66" text-anchor="start" dominant-baseline="central">same for every pixel: a read every 12 ticks</text>
+<text class="rp-sub" x="396" y="46" text-anchor="start" dominant-baseline="central">Computes the time of each read (in seconds) relative to the first read.</text>
+<text class="rp-sub" x="396" y="66" text-anchor="start" dominant-baseline="central">Returns an array of shape (Nreads,)</text>
+<text class="rp-sub" x="396" y="86" text-anchor="start" dominant-baseline="central">The array is the same for every pixel.</text>
 <rect class="rp-band" x="490" y="116" width="57" height="144" rx="6"/>
 <text class="rp-axis" x="518.5" y="134" text-anchor="middle" dominant-baseline="central">read 1</text>
 <text class="rp-axis" x="575.5" y="134" text-anchor="middle" dominant-baseline="central">read 2</text>
