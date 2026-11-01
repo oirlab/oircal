@@ -12,8 +12,6 @@ This package is developed at the [Optical Infrared Laboratory](https://oirlab.uc
 Contributors
 ------------
 
-(alphabetical order)
-
 - Bryson Cale
 - Jean-Baptiste Ruffio
 - Charlie Kilpatrick
