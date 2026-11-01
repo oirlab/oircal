@@ -6,23 +6,23 @@ Coadding
 Methods
 -------
 
-``method`` sets how the good values are combined:
+:param:`coadd.method` sets how the good values are combined:
 
 - ``"wmean"`` (default): inverse-variance weighted mean, with weights ``1 / input_err**2``.
 - ``"mean"``: mean.
 - ``"median"``: median.
 
-``err_method`` sets the uncertainty:
+:param:`coadd.err_method` sets the uncertainty:
 
-- ``"se"`` (default): standard error propagated from ``input_err``.
-- ``"scatter"``: measured from the spread of the good values, so it does not need ``input_err`` (except for ``"wmean"``, which needs it for the weights).
+- ``"se"`` (default): standard error propagated from :param:`coadd.input_err`.
+- ``"scatter"``: measured from the spread of the good values, so it does not need :param:`coadd.input_err` (except for ``"wmean"``, which needs it for the weights).
 
 See :func:`.combine` for the formulas.
 
 Coadding frames
 ---------------
 
-:func:`.coadd` coadds each element (e.g. pixel) independently. Values with nonzero ``input_dq`` or non-finite data (or errors) are excluded. The data and errors of the remaining values are combined with ``method`` and ``err_method``; the variance components are combined to match, DQ flags with a bitwise OR, and mid times with a mean. Elements with no good values are NaN and flagged ``DO_NOT_USE``.
+:func:`.coadd` coadds each element (e.g. pixel) independently. Values with nonzero :param:`coadd.input_dq` or non-finite data (or errors) are excluded. The data and errors of the remaining values are combined with :param:`coadd.method` and :param:`coadd.err_method`; the variance components are combined to match, DQ flags with a bitwise OR, and mid times with a mean. Elements with no good values are NaN and flagged ``DO_NOT_USE``.
 
 .. code-block:: python
 
@@ -80,7 +80,7 @@ Combining other measurements
 Sigma clipping
 --------------
 
-Sigma clipping is optional (``do_sigma_clip=True``, with more than 3 values) and always uses the biweight location and midvariance: values beyond ``sigma_thresh_low`` or ``sigma_thresh_high`` standard deviations from the biweight location are rejected, iteratively, keeping at least ``min_keep`` values. :func:`.sigma_clip_stack` does this for any stack, along its first axis:
+Sigma clipping is optional (``do_sigma_clip=True``, with more than 3 values) and always uses the biweight location and midvariance: values beyond :param:`coadd.sigma_thresh_low` or :param:`coadd.sigma_thresh_high` standard deviations from the biweight location are rejected, iteratively, keeping at least :param:`coadd.min_keep` values. :func:`.sigma_clip_stack` does this for any stack, along its first axis:
 
 .. code-block:: python
 

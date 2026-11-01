@@ -19,12 +19,12 @@ Subtracting the Dark
         dark_err=dark_err,
     )
 
-Errors are combined in quadrature only if both ``input_err`` and ``dark_err`` are given. Likewise, pass both ``input_dq`` and ``dark_dq`` to OR the dark DQ into the image DQ.
+Errors are combined in quadrature only if both :param:`subtract_dark_rate.input_err` and :param:`subtract_dark_rate.dark_err` are given. Likewise, pass both :param:`subtract_dark_rate.input_dq` and :param:`subtract_dark_rate.dark_dq` to OR the dark DQ into the image DQ.
 
 Make Dark
 ---------
 
-:func:`.make_dark` makes the dark calibration from a dark rate map, e.g. several dark exposures combined with :func:`.coadd`. It returns copies of the rate and its error as ``dark_rate`` and ``dark_err``, and ``dark_dq`` with pixels above ``hot_pixel_threshold`` (in the units of the rate) flagged ``HOT``. The keys match the arguments of :func:`.subtract_dark_rate`:
+:func:`.make_dark` makes the dark calibration from a dark rate map, e.g. several dark exposures combined with :func:`.coadd`. It returns copies of the rate and its error as ``dark_rate`` and ``dark_err``, and ``dark_dq`` with pixels above :param:`make_dark.hot_pixel_threshold` (in the units of the rate) flagged ``HOT``. The keys match the arguments of :func:`.subtract_dark_rate`:
 
 .. code-block:: python
 

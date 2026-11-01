@@ -22,7 +22,7 @@ To propagate the bias calibration's data quality, pass both DQ arrays. The bias 
 Make Bias
 ---------
 
-:func:`.make_bias` makes the bias from the first reads of a set of exposures. Each pixel's first reads are sigma clipped with :func:`.combine`. The bias is the median of the kept reads, and the kTC (reset) noise ``kTC`` is their standard deviation. Pixels whose bias or kTC noise is above ``bias_threshold`` or ``kTC_threshold`` are flagged ``UNRELIABLE_BIAS``.
+:func:`.make_bias` makes the bias from the first reads of a set of exposures. Each pixel's first reads are sigma clipped with :func:`.combine`. The bias is the median of the kept reads, and the kTC (reset) noise ``kTC`` is their standard deviation. Pixels whose bias or kTC noise is above :param:`make_bias.bias_threshold` or :param:`make_bias.kTC_threshold` are flagged ``UNRELIABLE_BIAS``.
 
 The kTC noise is the scatter of a pixel's first read across exposures, and includes the read noise of that read. The example simulates 20 dark exposures and keeps the first read of each:
 

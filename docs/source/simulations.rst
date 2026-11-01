@@ -32,14 +32,14 @@ Simulating a ramp
 
 The output ramp data is in ``DN``.
 
-By default the output is rounded and converted to ``uint16`` and clipped to ``[0, 65535]``. Pass ``convert_to_uint16=False`` to keep floating point values. Pass ``seed`` for reproducible noise.
+By default the output is rounded and converted to ``uint16`` and clipped to ``[0, 65535]``. Pass ``convert_to_uint16=False`` to keep floating point values. Pass :param:`create_ramp.seed` for reproducible noise.
 
 Detector effects
 ----------------
 
-- **Flat field**: ``flat`` scales the source before the dark current is added.
-- **Non-linearity**: ``nonlin_coeffs`` applies ``np.polyval(nonlin_coeffs, data)`` to the ramps (highest degree first).
-- **1/f noise**: ``std_1overf`` (DN) adds correlated 1/f noise shared between ``n_channels`` readout channels (``vertical`` sets their orientation).
+- **Flat field**: :param:`create_ramp.flat` scales the source before the dark current is added.
+- **Non-linearity**: :param:`create_ramp.nonlin_coeffs` applies ``np.polyval(nonlin_coeffs, data)`` to the ramps (highest degree first).
+- **1/f noise**: :param:`create_ramp.std_1overf` (DN) adds correlated 1/f noise shared between :param:`create_ramp.n_channels` readout channels (:param:`create_ramp.vertical` sets their orientation).
 
 .. code-block:: python
 
@@ -56,7 +56,7 @@ Detector effects
 Variable sources
 ----------------
 
-``flux_scaling`` and ``flux_scaling_times`` (s) multiply the source by a time series centered on unity, conserving the total flux. :func:`.utr_variable_rate_cube` returns the per-read rates used for this.
+:param:`create_ramp.flux_scaling` and :param:`create_ramp.flux_scaling_times` (s) multiply the source by a time series centered on unity, conserving the total flux. :func:`.utr_variable_rate_cube` returns the per-read rates used for this.
 
 .. code-block:: python
 

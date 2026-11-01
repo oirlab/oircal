@@ -11,6 +11,9 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../.."))
 
+from docutils import nodes
+from sphinx import addnodes
+from sphinx.roles import XRefRole
 from sphinx.util.typing import stringify_annotation
 from sphinxawesome_theme.postprocess import Icons
 
@@ -147,7 +150,57 @@ def add_param_types(app, what, name, obj, options, lines):
         lines.extend(new_lines)
 
 
+def add_param_targets(app, doctree):
+    """
+    Give each documented parameter an anchor and register it for the ``:param:`` role.
+
+    The anchor is ``<module>.<function>.<param>`` and the target is ``<function>.<param>``,
+    e.g. ``fit_nonlin_coefs.criterion_for_nonlin_thresh``.
+    """
+    std = app.env.domains.standard_domain
+    for desc in doctree.findall(addnodes.desc):
+        if desc.get("domain") != "py" or desc.get("objtype") not in ("function", "method", "class"):
+            continue
+        sig = next(desc.findall(addnodes.desc_signature), None)
+        content = next((c for c in desc.children if isinstance(c, addnodes.desc_content)), None)
+        if sig is None or not sig["ids"] or content is None:
+            continue
+        # Only this object's own field lists, not those of nested methods
+        for field_list in (c for c in content.children if isinstance(c, nodes.field_list)):
+            for field in field_list.children:
+                if field[0].astext() != "Parameters":
+                    continue
+                body = field[1]
+                # One paragraph per parameter, in a bullet list unless there is only one
+                items = body[0].children if isinstance(body[0], nodes.bullet_list) else [body]
+                for item in items:
+                    name = next(item.findall(addnodes.literal_strong), None)
+                    if name is None:
+                        continue
+                    param = name.astext().lstrip("*")
+                    node_id = f"{sig['ids'][0]}.{param}"
+                    item["ids"].append(node_id)
+                    std.note_object("param", f"{sig['fullname']}.{param}", node_id, location=item)
+
+
+class ParamRole(XRefRole):
+    """``:param:`function.param``` shows ``param`` as code, linked to its API entry."""
+
+    def process_link(self, env, refnode, has_explicit_title, title, target):
+        if not has_explicit_title:
+            title = target.rsplit(".", 1)[-1]
+        return title, target
+
+
 def setup(app):
     app.connect("autodoc-skip-member", autodoc_skip_member)
     # Priority > 500 so this runs after napoleon's docstring conversion.
     app.connect("autodoc-process-docstring", add_param_types, priority=600)
+    app.add_crossref_type("param", "param", objname="parameter")
+    app.add_role_to_domain(
+        "std",
+        "param",
+        ParamRole(innernodeclass=nodes.literal, warn_dangling=True),
+        override=True,
+    )
+    app.connect("doctree-read", add_param_targets)

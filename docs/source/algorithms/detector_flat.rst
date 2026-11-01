@@ -19,12 +19,12 @@ Correcting the Flat
         input_var_rnoise=ramp_fit_result["rate_var_rnoise"],
     )
 
-If ``input_err`` is given, it is propagated through the division. The flat contributes to the error only if ``detflat_err`` is also given; otherwise it is treated as noiseless. The variances ``input_var_poisson`` and ``input_var_rnoise`` are divided by the flat squared; ``detflat_err`` enters only ``input_err``. Pass both ``input_dq`` and ``detflat_dq`` to OR the flat's DQ into the image DQ.
+If :param:`correct_detector_flat.input_err` is given, it is propagated through the division. The flat contributes to the error only if :param:`correct_detector_flat.detflat_err` is also given; otherwise it is treated as noiseless. The variances :param:`correct_detector_flat.input_var_poisson` and :param:`correct_detector_flat.input_var_rnoise` are divided by the flat squared; :param:`correct_detector_flat.detflat_err` enters only :param:`correct_detector_flat.input_err`. Pass both :param:`correct_detector_flat.input_dq` and :param:`correct_detector_flat.detflat_dq` to OR the flat's DQ into the image DQ.
 
 Make Detector Flat
 ------------------
 
-:func:`.make_detector_flat` makes the flat from a flat-field rate map, e.g. several exposures combined with :func:`.coadd`, divided by its median. Pixels below ``cold_pixel_threshold`` (0.9 by default) are flagged ``COLD``. It returns ``detflat``, ``detflat_err`` and ``detflat_dq``, plus ``median_rate`` for monitoring the lamp:
+:func:`.make_detector_flat` makes the flat from a flat-field rate map, e.g. several exposures combined with :func:`.coadd`, divided by its median. Pixels below :param:`make_detector_flat.cold_pixel_threshold` (0.9 by default) are flagged ``COLD``. It returns ``detflat``, ``detflat_err`` and ``detflat_dq``, plus ``median_rate`` for monitoring the lamp:
 
 .. code-block:: python
 

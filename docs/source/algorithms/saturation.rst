@@ -4,7 +4,7 @@ Saturation
 Flagging Saturation
 -------------------
 
-:func:`.check_saturation` compares each read to a per-pixel saturation threshold (DN). The first read at or above the threshold, and every read after it, are flagged ``SATURATED | DO_NOT_USE`` in ``dq_raw``. The DQ map from the saturation calibration (``sat_dq``) is OR'ed into ``dq``.
+:func:`.check_saturation` compares each read to a per-pixel saturation threshold (DN). The first read at or above the threshold, and every read after it, are flagged ``SATURATED | DO_NOT_USE`` in ``dq_raw``. The DQ map from the saturation calibration (:param:`check_saturation.sat_dq`) is OR'ed into ``dq``.
 
 .. code-block:: python
 
@@ -21,12 +21,12 @@ Flagging Saturation
         dq_flags=dq_flags,
     )
 
-Without ``dq_flags``, reads are not flagged and only ``sat_dq`` is propagated.
+Without :param:`check_saturation.dq_flags`, reads are not flagged and only :param:`check_saturation.sat_dq` is propagated.
 
 Make Saturation
 ---------------
 
-:func:`.make_saturation` makes the threshold map from the last reads of ramps that reach saturation: the median of the last reads, minus ``offset`` (100 DN by default) to allow for read noise and other systematics.
+:func:`.make_saturation` makes the threshold map from the last reads of ramps that reach saturation: the median of the last reads, minus :param:`make_saturation.offset` (100 DN by default) to allow for read noise and other systematics.
 
 The threshold is computed as the median over several exposures. The example simulates five exposures of a source bright enough to saturate every pixel. :func:`.create_ramp` clips the counts at 65535 DN, which stands in for the detector's saturation level, and the last read of each exposure is kept:
 

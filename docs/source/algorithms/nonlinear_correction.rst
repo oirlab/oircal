@@ -5,7 +5,7 @@ Non-linearity
 Correcting Nonlinearity
 -----------------------
 
-:func:`.correct_nonlinearity` subtracts the first read, applies the polynomial, and adds the first read back, so the corrected ramp keeps its bias. Reads above ``nonlin_max`` are flagged ``NON_LINEAR | DO_NOT_USE`` in ``dq_raw``, and the DQ map from the non-linearity calibration (``nonlin_dq``) is OR'ed into ``dq``. The ramps must be floating point. Only ``input_data`` and ``coeffs`` are required; the flagging and DQ propagation run only when their inputs are given.
+:func:`.correct_nonlinearity` subtracts the first read, applies the polynomial, and adds the first read back, so the corrected ramp keeps its bias. Reads above :param:`correct_nonlinearity.nonlin_max` are flagged ``NON_LINEAR | DO_NOT_USE`` in ``dq_raw``, and the DQ map from the non-linearity calibration (:param:`correct_nonlinearity.nonlin_dq`) is OR'ed into ``dq``. The ramps must be floating point. Only :param:`correct_nonlinearity.input_data` and :param:`correct_nonlinearity.coeffs` are required; the flagging and DQ propagation run only when their inputs are given.
 
 .. code-block:: python
 
@@ -83,4 +83,4 @@ Each pixel's polynomial is fit to all of its ramps. The example below simulates 
         satval=0.95 * (sat_thresh - flat_bias),
     )
 
-``nonlin_coeffs`` has shape ``(order + 1, Nrows, Ncols)``, lowest degree first. ``nonlin_thresh`` is the level (DN) where counts deviate from linear by 1%, and ``nonlin_max`` is the level beyond which the correction is no longer reliable (10% by default; see ``criterion_for_nonlin_thresh`` and ``criterion_for_nonlin_max``).
+``nonlin_coeffs`` has shape ``(order + 1, Nrows, Ncols)``, lowest degree first. ``nonlin_thresh`` is the level (DN) where counts deviate from linear by 1%, and ``nonlin_max`` is the level beyond which the correction is no longer reliable (10% by default; see :param:`fit_nonlin_coefs.criterion_for_nonlin_thresh` and :param:`fit_nonlin_coefs.criterion_for_nonlin_max`).

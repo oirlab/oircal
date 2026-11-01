@@ -8,7 +8,7 @@ Two implementations are available.
 Read differences
 ----------------
 
-:func:`.jump_detection_difference` compares each difference between successive reads to the pixel's median difference, and flags reads that differ by more than ``rejection_threshold`` sigma. Reads at the end of the ramp flagged ``SATURATED`` or ``DO_NOT_USE`` are left out.
+:func:`.jump_detection_difference` compares each difference between successive reads to the pixel's median difference, and flags reads that differ by more than :param:`jump_detection_difference.rejection_threshold` sigma. Reads at the end of the ramp flagged ``SATURATED`` or ``DO_NOT_USE`` are left out.
 
 .. code-block:: python
 

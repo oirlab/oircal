@@ -6,7 +6,7 @@ The gain (e-/DN) and single-read read noise (DN) are inputs to ramp fitting and 
 Converting to Electrons
 -----------------------
 
-:func:`.correct_gain` multiplies a rate image (DN/s) by the gain (e-/DN), in place, giving e-/s. The variances ``input_var_poisson`` and ``input_var_rnoise`` are multiplied by the gain squared.
+:func:`.correct_gain` multiplies a rate image (DN/s) by the gain (e-/DN), in place, giving e-/s. The variances :param:`correct_gain.input_var_poisson` and :param:`correct_gain.input_var_rnoise` are multiplied by the gain squared.
 
 .. code-block:: python
 
@@ -20,12 +20,12 @@ Converting to Electrons
         input_var_rnoise=ramp_fit_result["rate_var_rnoise"],
     )
 
-If ``input_err`` is given, it is propagated through the product. The gain contributes to the error only if ``gain_err`` is also given, e.g. ``np.sqrt(cov[0, 0])`` from :func:`.fit_gain_and_readnoise`; otherwise it is treated as noiseless. ``gain_err`` enters only ``input_err``. Pass both ``input_dq`` and ``gain_dq`` to OR the gain's DQ into the image DQ.
+If :param:`correct_gain.input_err` is given, it is propagated through the product. The gain contributes to the error only if :param:`correct_gain.gain_err` is also given, e.g. ``np.sqrt(cov[0, 0])`` from :func:`.fit_gain_and_readnoise`; otherwise it is treated as noiseless. :param:`correct_gain.gain_err` enters only :param:`correct_gain.input_err`. Pass both :param:`correct_gain.input_dq` and :param:`correct_gain.gain_dq` to OR the gain's DQ into the image DQ.
 
 Make Gain and Read Noise
 ------------------------
 
-:func:`.fit_gain_and_readnoise` fits the gain and read noise of each pixel from a stack of exposures of shape ``(Nfiles, Nreads, Nrows, Ncols)``. It maximizes the likelihood of the ramps, marginalized over each ramp's count rate (`Brandt 2025 <https://ui.adsabs.harvard.edu/abs/2025PASP..137l5006B/abstract>`_), starting from ``init_gain`` and ``init_rn``. ``method`` sets how the maximum is found:
+:func:`.fit_gain_and_readnoise` fits the gain and read noise of each pixel from a stack of exposures of shape ``(Nfiles, Nreads, Nrows, Ncols)``. It maximizes the likelihood of the ramps, marginalized over each ramp's count rate (`Brandt 2025 <https://ui.adsabs.harvard.edu/abs/2025PASP..137l5006B/abstract>`_), starting from :param:`fit_gain_and_readnoise.init_gain` and :param:`fit_gain_and_readnoise.init_rn`. :param:`fit_gain_and_readnoise.method` sets how the maximum is found:
 
 - ``"quad"`` (default): fits a quadratic form to the log likelihood on a 3-point grid around the initial values, then again around the first result.
 - ``"grid"``: evaluates the likelihood on a dense grid and takes the errors from the marginal posteriors.

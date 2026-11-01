@@ -49,13 +49,13 @@ Each calibration is a set of arrays, named here as in the arguments of the funct
 - **Nonlinearity**
 
   - ``coeffs``: array of shape ``(Ncoeff, Nrows, Ncols)`` containing the polynomial coefficients for the nonlinearity correction. The first axis is the polynomial order, and coefficients are ordered from lowest to highest order.
-  - ``nonlin_thresh``: the level in DN (first read subtracted) where counts deviate from linear by 1% (``criterion_for_nonlin_thresh``), from :func:`.fit_nonlin_coefs`.
-  - ``nonlin_max``: the level in DN where counts deviate from linear by 10% (``criterion_for_nonlin_max``), from :func:`.fit_nonlin_coefs`. :func:`.correct_nonlinearity` flags reads above it.
+  - ``nonlin_thresh``: the level in DN (first read subtracted) where counts deviate from linear by 1% (:param:`fit_nonlin_coefs.criterion_for_nonlin_thresh`), from :func:`.fit_nonlin_coefs`.
+  - ``nonlin_max``: the level in DN where counts deviate from linear by 10% (:param:`fit_nonlin_coefs.criterion_for_nonlin_max`), from :func:`.fit_nonlin_coefs`. :func:`.correct_nonlinearity` flags reads above it.
   - ``nonlin_dq``: DQ flags.
 
 - **Read noise**
 
-  - ``rn``: the single-read standard deviation in DN (``rdnoise`` in the ramp fitting functions).
+  - ``rn``: the single-read standard deviation in DN (:param:`fit_ramps_ols.rdnoise` in the ramp fitting functions).
 
 - **Gain**
 
