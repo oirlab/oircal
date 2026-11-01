@@ -272,6 +272,7 @@ def _fit_ramps_jwst_row(indata: tuple) -> tuple:
     ramp_data.flags_do_not_use = dq_flags.DO_NOT_USE
     ramp_data.flags_jump_det = dq_flags.JUMP_DET
     ramp_data.flags_saturated = dq_flags.SATURATED
+    ramp_data.flags_persistence = 0  # no persistence flag: the OLS fitter strips/sets no bits
     ramp_data.flags_no_gain_val = dq_flags.UNRELIABLE_FLAT  # Check if this is best/optimal flag
     ramp_data.flags_unreliable_slope = dq_flags.UNRELIABLE_SLOPE
     ramp_data.flags_chargeloss = (
@@ -342,9 +343,14 @@ def _fit_ramps_jwst_row(indata: tuple) -> tuple:
         )
 
     # Parse output image info that we need to pass to output data model
-    outdata, dq, var_poisson, var_rnoise, err = image_info
-
-    return (i, outdata, dq, var_poisson, var_rnoise, err)
+    return (
+        i,
+        image_info["slope"],
+        image_info["dq"],
+        image_info["var_poisson"],
+        image_info["var_rnoise"],
+        image_info["err"],
+    )
 
 
 def _fit_ramps_worker(args: tuple) -> tuple:

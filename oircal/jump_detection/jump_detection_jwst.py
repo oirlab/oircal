@@ -45,6 +45,11 @@ def _jump_detection_jwst_row(indata: tuple) -> tuple[int, np.ndarray]:
 
     # Set data arrays and parameters
     jump_data.nframes = 1  # This is not the same as number of reads but number of frames per read
+    # Group spacing and reads per group difference, which JumpData only sets itself when built
+    # from a data model. These are stcal's values for evenly spaced groups without a read
+    # pattern, which keep differences in counts per group with noise rn^2 / nframes.
+    jump_data.dt_group = np.ones(1)
+    jump_data.n_reads_groupdiff = np.ones(1) * 2 * jump_data.nframes
     jump_data.data = ramp_data
     jump_data.gain_2d = gain
     jump_data.rnoise_2d = rdnoise
