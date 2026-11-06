@@ -1,0 +1,104 @@
+/* Remove divider lines between API entries */
+dl.py dd {
+    border-top: none !important;
+}
+
+dl.py > dt {
+    border-top: none !important;
+    border-bottom: none !important;
+}
+
+/* Make text in code blocks semi-bold */
+.highlight {
+    font-weight: 500; /* Semi-bold */
+}
+
+/* Optional: Ensure pre-formatted text is also semi-bold */
+pre {
+    font-weight: 500; /* Semi-bold */
+}
+
+/* Custom table styling */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.custom-table th,
+.custom-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.custom-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.custom-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.custom-table tr:hover {
+    background-color: #e2e2e2;
+}
+
+/* Responsive: Allow horizontal scrolling for large tables */
+.custom-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Make sure the table is not overly wide on smaller screens */
+@media (max-width: 768px) {
+    .custom-table {
+        font-size: 12px;
+    }
+}
+
+/* The theme sizes logos as small squares; keep the wide OIR Lab logo's aspect ratio */
+header img[alt="Logo"] {
+    width: auto;
+    height: 120px;
+}
+
+#left-sidebar img[alt="Logo"] {
+    width: auto;
+    height: 84px;
+}
+
+/* Larger site title next to the logo */
+header a > span.font-bold {
+    font-size: 1.75rem;
+}
+
+#left-sidebar a > span.font-bold {
+    font-size: 1.25rem;
+}
+
+/* Taller header (theme default 3.5rem) to fit the logo; offset the sticky sidebars and
+   anchor jumps to match */
+header > .container.h-14 {
+    height: 8.5rem;
+}
+
+@media (min-width: 768px) {
+    #left-sidebar.md\:top-14 {
+        top: 8.5rem;
+        height: calc(100vh - 8.5rem);
+    }
+}
+
+#right-sidebar .sticky.top-16 {
+    top: 9rem;
+    max-height: calc(100vh - 9.5rem);
+}
+
+#content section,
+.sig {
+    scroll-margin: 9.5rem;
+}

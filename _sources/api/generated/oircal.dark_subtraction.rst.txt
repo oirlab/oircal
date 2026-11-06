@@ -1,0 +1,15 @@
+﻿oircal.dark\_subtraction
+========================
+
+.. automodule:: oircal.dark_subtraction
+   :no-members:
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   dark_subtraction
+   make_dark

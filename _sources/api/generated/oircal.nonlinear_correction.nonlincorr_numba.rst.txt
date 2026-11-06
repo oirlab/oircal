@@ -1,0 +1,13 @@
+oircal.nonlinear\_correction.nonlincorr\_numba
+==============================================
+
+.. automodule:: oircal.nonlinear_correction.nonlincorr_numba
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _correct_nonlinearity_numba
+      correct_nonlinearity
+   

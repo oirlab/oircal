@@ -1,0 +1,15 @@
+﻿oircal.jump\_detection
+======================
+
+.. automodule:: oircal.jump_detection
+   :no-members:
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   jump_detection_difference
+   jump_detection_jwst

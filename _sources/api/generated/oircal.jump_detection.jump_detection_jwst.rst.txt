@@ -1,0 +1,6 @@
+oircal.jump\_detection.jump\_detection\_jwst
+============================================
+
+.. currentmodule:: oircal.jump_detection
+
+.. autofunction:: jump_detection_jwst

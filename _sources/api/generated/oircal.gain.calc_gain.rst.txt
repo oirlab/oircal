@@ -1,0 +1,6 @@
+oircal.gain.calc\_gain
+======================
+
+.. currentmodule:: oircal.gain
+
+.. autofunction:: calc_gain

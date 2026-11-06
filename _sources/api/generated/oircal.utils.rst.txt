@@ -1,0 +1,19 @@
+﻿oircal.utils
+============
+
+.. automodule:: oircal.utils
+   :no-members:
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   array_utils
+   dq_utils
+   parallelization_utils
+   read_times
+   sigma_clipping
+   stats

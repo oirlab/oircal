@@ -1,0 +1,13 @@
+oircal.dark\_subtraction.dark\_subtraction
+==========================================
+
+.. automodule:: oircal.dark_subtraction.dark_subtraction
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _subtract_dark_rate_numba
+      subtract_dark_rate
+   

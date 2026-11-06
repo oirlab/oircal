@@ -1,0 +1,13 @@
+oircal.utils.array\_utils
+=========================
+
+.. automodule:: oircal.utils.array_utils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      convert_endianness
+      polyval1d
+   

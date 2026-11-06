@@ -1,0 +1,6 @@
+oircal.read\_noise.calc\_readnoise
+==================================
+
+.. currentmodule:: oircal.read_noise
+
+.. autofunction:: calc_readnoise

@@ -1,0 +1,21 @@
+oircal.ramp\_fitting.fitramp\_Brandt
+====================================
+
+.. automodule:: oircal.ramp_fitting.fitramp_Brandt
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      fit_ramps
+      getramps
+      mask_jumps
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Covar
+      Ramp_Result
+   

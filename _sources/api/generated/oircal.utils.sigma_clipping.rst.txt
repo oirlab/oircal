@@ -1,0 +1,15 @@
+oircal.utils.sigma\_clipping
+============================
+
+.. automodule:: oircal.utils.sigma_clipping
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _mask_outliers
+      _sigma_clip_stack_numba
+      sigma_clip
+      sigma_clip_stack
+   

@@ -1,0 +1,23 @@
+oircal.refpix.reference\_SCALES\_DRP
+====================================
+
+.. automodule:: oircal.refpix.reference_SCALES_DRP
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      acn_filter
+      acn_filter_nobaserm
+      calc_avg_amps
+      calc_avg_amps_old
+      calc_avg_cols
+      calc_avg_cols_no_baseline
+      calc_col_smooth
+      ref_filter
+      reffix_amps
+      reffix_amps_old
+      reffix_hxrg
+      smooth_fft
+   

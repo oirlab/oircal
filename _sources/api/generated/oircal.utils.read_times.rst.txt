@@ -1,0 +1,14 @@
+oircal.utils.read\_times
+========================
+
+.. automodule:: oircal.utils.read_times
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _channel_shape
+      get_delta_read_times
+      get_first_read_mjd
+   

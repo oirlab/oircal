@@ -1,0 +1,14 @@
+﻿oircal.read\_noise
+==================
+
+.. automodule:: oircal.read_noise
+   :no-members:
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   calc_readnoise

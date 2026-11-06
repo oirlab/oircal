@@ -1,0 +1,15 @@
+﻿oircal.bias\_subtraction
+========================
+
+.. automodule:: oircal.bias_subtraction
+   :no-members:
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   bias_subtraction
+   make_bias

@@ -1,0 +1,6 @@
+oircal.detector\_flat.make\_detector\_flat
+==========================================
+
+.. currentmodule:: oircal.detector_flat
+
+.. autofunction:: make_detector_flat

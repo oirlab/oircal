@@ -1,0 +1,13 @@
+oircal.detector\_flat.detector\_flat
+====================================
+
+.. automodule:: oircal.detector_flat.detector_flat
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _correct_detector_flat_numba
+      correct_detector_flat
+   

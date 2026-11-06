@@ -1,0 +1,16 @@
+﻿oircal.nonlinear\_correction
+============================
+
+.. automodule:: oircal.nonlinear_correction
+   :no-members:
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   calc_nonlin_coefs_Brandt
+   fit_nonlin_coefs
+   nonlincorr_numba

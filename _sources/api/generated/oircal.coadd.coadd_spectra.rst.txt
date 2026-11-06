@@ -1,0 +1,6 @@
+oircal.coadd.coadd\_spectra
+===========================
+
+.. currentmodule:: oircal.coadd
+
+.. autofunction:: coadd_spectra

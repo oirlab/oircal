@@ -1,0 +1,6 @@
+oircal.bias\_subtraction.make\_bias
+===================================
+
+.. currentmodule:: oircal.bias_subtraction
+
+.. autofunction:: make_bias

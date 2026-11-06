@@ -1,0 +1,18 @@
+oircal.ramp\_fitting.fit\_ramp\_jwst
+====================================
+
+.. automodule:: oircal.ramp_fitting.fit_ramp_jwst
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _fit_ramps_cython_row
+      _fit_ramps_jwst_row
+      _fit_ramps_worker
+      _jump_detection_worker
+      _stcal_likely_fit_allow_negative_rates
+      _tpool_init_jwst_ramp
+      fit_ramps_jwst
+   

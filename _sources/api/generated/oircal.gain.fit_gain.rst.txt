@@ -1,0 +1,23 @@
+oircal.gain.fit\_gain
+=====================
+
+.. automodule:: oircal.gain.fit_gain
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _fit_per_pixel
+      _fit_quad_iterated
+      _fit_row
+      _fit_rows_worker
+      _fit_single
+      _fitquad_gain_rn
+      _init_worker
+      _posterior_fit
+      _quad_1d_through_3pts
+      _read_differences
+      _three_points
+      fit_gain_and_readnoise
+   

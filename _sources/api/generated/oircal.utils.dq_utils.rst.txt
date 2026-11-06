@@ -1,0 +1,13 @@
+oircal.utils.dq\_utils
+======================
+
+.. automodule:: oircal.utils.dq_utils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      _reduce_dq_flags
+      dq_flags_to_namedtuple
+   
