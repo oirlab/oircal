@@ -159,6 +159,16 @@ def _fit_ramps_cython_row(indata: tuple) -> tuple:
         cguess = np.sum(diffs * diffs2use, axis=0) / np.sum(diffs2use, axis=0)
     cguess_phnoise = np.maximum(cguess, 0.0)
 
+    # Pixels with no read noise and no counts (e.g. reading a constant 0) have a zero
+    # covariance, which the Cython kernel divides by. Fit them with a placeholder read noise
+    # and replace the result with the mean difference and zero error below, as OLS gives.
+    readnoise = readnoise_2d[0, :].astype(np.float64)
+    gain = gain_2d[0, :].astype(np.float64)
+    zero_covar = (
+        cguess_phnoise * covar.alpha_phnoise[0] / gain + readnoise**2 * covar.alpha_readnoise[0]
+    ) == 0
+    readnoise[zero_covar] = 1.0
+
     cython_out = fitramp_cython.fit_ramps_row(
         diffs,
         diffs2use,
@@ -166,8 +176,8 @@ def _fit_ramps_cython_row(indata: tuple) -> tuple:
         covar.beta_phnoise,
         covar.alpha_readnoise,
         covar.beta_readnoise,
-        readnoise_2d[0, :].astype(np.float64),
-        gain_2d[0, :].astype(np.float64),
+        readnoise,
+        gain,
         cguess_phnoise,
         n1,
         n0,
@@ -203,6 +213,11 @@ def _fit_ramps_cython_row(indata: tuple) -> tuple:
         var_rnoise = np.square(uncert)
         var_poisson = np.zeros_like(var_rnoise, dtype=np.float64)
         err = uncert
+
+    countrate_np[zero_covar] = cguess[zero_covar]
+    err[zero_covar] = 0.0
+    var_poisson[zero_covar] = 0.0
+    var_rnoise[zero_covar] = 0.0
 
     dq = np.zeros((1, Ncols), dtype=np.uint32)
 
